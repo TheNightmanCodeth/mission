@@ -41,13 +41,11 @@ struct ContentView: View {
         List(store.torrents, id: \.self) { torrent in
             ListRow(torrent: binding(for: torrent))
         }
-        
-        //.frame(minWidth: windowSize().minWidth, minHeight: windowSize().minHeight)
         .navigationTitle("Mission")
         .toolbar {
             ToolbarItem(placement: .status) {
                 Button(action: {
-                    self.isShowingAuthAlert.toggle()
+                    store.setup.toggle()
                 }) {
                     Image(systemName: "network")
                 }
@@ -74,7 +72,7 @@ struct ContentView: View {
                         Image(systemName: "xmark.circle.fill")
                             .padding(.top, 20)
                             .padding(.bottom, 10)
-                    })
+                    }).buttonStyle(BorderlessButtonStyle())
                 }
                 Text("Add a server with it's URL and login")
                     .padding()
@@ -101,20 +99,23 @@ struct ContentView: View {
                 HStack {
                     Spacer()
                     Button("Submit") {
+                        // Save host
                         let newHost = Host(context: viewContext)
                         newHost.name = nameInput
                         newHost.server = hostInput
-                        var port = portInput
                         newHost.port = Int16(portInput)!
                         newHost.username = userInput
+                        try? viewContext.save()
+                        
+                        // Save password to keychain
                         let keychain = Keychain(service: "me.jdiggity.mission")
                         keychain[nameInput] = passInput
-                        try? viewContext.save()
+                        
+                        // Update the view
                         serverStore.setServer(host: newHost)
                         store.updateServer(newHost: newHost)
                         store.startTimer()
                         store.setup.toggle()
-                        self.isShowingAuthAlert.toggle()
                     }.padding()
                 }
             }
@@ -124,16 +125,17 @@ struct ContentView: View {
                 HStack {
                     Text("Add Torrent")
                         .font(.headline)
+                        .padding(.leading, 20)
                         .padding(.bottom, 10)
                         .padding(.top, 20)
-                    
                     Button(action: {
                         self.isShowingAddAlert.toggle()
                     }, label: {
                         Image(systemName: "xmark.circle.fill")
                             .padding(.top, 20)
                             .padding(.bottom, 10)
-                    })
+                            .padding(.leading, 20)
+                    }).buttonStyle(BorderlessButtonStyle())
                 }
                 
                 Text("Add either a magnet link or .torrent file")
@@ -150,13 +152,18 @@ struct ContentView: View {
                 
                 HStack {
                     Button("Upload file") {
+                        // Show file chooser panel
                         let panel = NSOpenPanel()
                         panel.allowsMultipleSelection = false
                         panel.canChooseDirectories = false
-                        //panel.allowedContentTypes
+                        // TODO: Figure out how the hell to use [UTTYpe]
+                        panel.allowedFileTypes = ["torrent"]
+                        
                         if panel.runModal() == .OK {
+                            // Convert the file to a base64 string
                             let fileData = try! Data.init(contentsOf: panel.url!)
                             let fileStream: String = fileData.base64EncodedString(options: NSData.Base64EncodingOptions.init(rawValue: 0))
+                            // Send the file to the server
                             var config = TransmissionConfig()
                             config.host = serverStore.host?.server
                             config.port = Int(serverStore.host!.port)
@@ -173,6 +180,7 @@ struct ContentView: View {
                     .padding()
                     Spacer()
                     Button("Submit") {
+                        // Send the magnet link to the server
                         var config = TransmissionConfig()
                         config.host = serverStore.host?.server
                         config.port = Int(serverStore.host!.port)
@@ -238,6 +246,7 @@ class Store: NSObject, ObservableObject {
     }
 }
 
+// TODO: Merge ServerStore and Store and move it to a new file to declutter the ContentView
 class ServerStore: NSObject, ObservableObject {
     @Published var server: Server?
     @Published var host: Host?
@@ -249,6 +258,7 @@ class ServerStore: NSObject, ObservableObject {
             entity: Host.entity(),
             sortDescriptors: [NSSortDescriptor(key: "name", ascending: true)]
         ) var hosts: FetchedResults<Host>
+        // TODO: Add this to the view's onAppear
         hosts.forEach { h in
             if (h.isDefault) {
                 var config = TransmissionConfig()
@@ -298,12 +308,23 @@ struct Server {
 struct ListRow: View {
     @Binding var torrent: Torrent
     var body: some View {
-        VStack {
-            Text(torrent.name)
-                .fixedSize(horizontal: false, vertical: true)
-                .frame(maxWidth: .infinity, alignment: .topLeading)
-            ProgressView(value: torrent.percentDone)
-        }.padding(.all, 10)
+        HStack {
+            VStack {
+                Text(torrent.name)
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
+                ProgressView(value: torrent.percentDone)
+            }.padding(.all, 10)
+            Button(action: {
+                /* TODO: Show dropdown with options like:
+                        - Delete torrent
+                        - Pause Torrent
+                        - Resume Torrent
+                 */
+            }, label: {
+                Image(systemName: "ellipsis.circle")
+            }).buttonStyle(BorderlessButtonStyle())
+        }
     }
 }
 
