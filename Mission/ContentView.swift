@@ -39,7 +39,7 @@ struct ContentView: View {
     var body: some View {
         
         List(store.torrents, id: \.self) { torrent in
-            ListRow(torrent: binding(for: torrent))
+            ListRow(torrent: binding(for: torrent), store: serverStore)
         }
         .navigationTitle("Mission")
         .toolbar {
@@ -307,6 +307,8 @@ struct Server {
 
 struct ListRow: View {
     @Binding var torrent: Torrent
+    var store: ServerStore
+    
     var body: some View {
         HStack {
             VStack {
@@ -315,15 +317,24 @@ struct ListRow: View {
                     .frame(maxWidth: .infinity, alignment: .topLeading)
                 ProgressView(value: torrent.percentDone)
             }.padding(.all, 10)
-            Button(action: {
-                /* TODO: Show dropdown with options like:
-                        - Delete torrent
-                        - Pause Torrent
-                        - Resume Torrent
-                 */
-            }, label: {
-                Image(systemName: "ellipsis.circle")
-            }).buttonStyle(BorderlessButtonStyle())
+            Menu {
+                Button("Delete", action: {
+                    var config = TransmissionConfig()
+                    config.host = store.host?.server
+                    config.port = Int(store.host!.port)
+                    let keychain = Keychain(service: "me.jdiggity.mission")
+                    let password = keychain[store.host!.name!]
+                    let auth = TransmissionAuth(username: store.host!.username!, password: password!)
+                    
+                    deleteTorrent(torrent: torrent, erase: false, config: config, auth: auth, onDel: { response in
+                        // TODO: Handle response
+                    })
+                })
+            } label: {
+                
+            }
+            .menuStyle(BorderlessButtonMenuStyle())
+            .frame(width: 10, height: 10, alignment: .center)
         }
     }
 }
@@ -337,7 +348,6 @@ func updateList(host: Host, update: @escaping ([Torrent]) -> Void) {
     let auth = TransmissionAuth(username: host.username!, password: keychain[host.name!]!)
     
     getTorrents(config: config, auth: auth, onReceived: { torrents in
-        print("Updating torrents...")
         // TODO: Check for null in `torrents` and show auth error
         update(torrents!)
     })
