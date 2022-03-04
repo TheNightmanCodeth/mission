@@ -20,6 +20,7 @@
 		D83A42AB27CBEF7100B558B6 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83A42AA27CBEF7100B558B6 /* Persistence.swift */; };
 		D83A42AE27CBEFAB00B558B6 /* MissionStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D83A42AC27CBEFAB00B558B6 /* MissionStore.xcdatamodeld */; };
 		D83A42B127CDE3F700B558B6 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = D83A42B027CDE3F700B558B6 /* KeychainAccess */; };
+		D8F05BB527D28E320067CB10 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = D8F05BB427D28E320067CB10 /* AlertToast */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -65,6 +66,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D83A42B127CDE3F700B558B6 /* KeychainAccess in Frameworks */,
+				D8F05BB527D28E320067CB10 /* AlertToast in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -174,6 +176,7 @@
 			name = Mission;
 			packageProductDependencies = (
 				D83A42B027CDE3F700B558B6 /* KeychainAccess */,
+				D8F05BB427D28E320067CB10 /* AlertToast */,
 			);
 			productName = Mission;
 			productReference = D8217BF127C82C7D009ABA7C /* Mission.app */;
@@ -249,6 +252,7 @@
 			mainGroup = D8217BE827C82C7D009ABA7C;
 			packageReferences = (
 				D83A42AF27CDE3F700B558B6 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
+				D8F05BB327D28E320067CB10 /* XCRemoteSwiftPackageReference "AlertToast" */,
 			);
 			productRefGroup = D8217BF227C82C7D009ABA7C /* Products */;
 			projectDirPath = "";
@@ -628,6 +632,14 @@
 				kind = branch;
 			};
 		};
+		D8F05BB327D28E320067CB10 /* XCRemoteSwiftPackageReference "AlertToast" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/elai950/AlertToast.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -635,6 +647,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D83A42AF27CDE3F700B558B6 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
 			productName = KeychainAccess;
+		};
+		D8F05BB427D28E320067CB10 /* AlertToast */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = D8F05BB327D28E320067CB10 /* XCRemoteSwiftPackageReference "AlertToast" */;
+			productName = AlertToast;
 		};
 /* End XCSwiftPackageProductDependency section */
 

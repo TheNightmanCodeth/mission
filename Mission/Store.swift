@@ -18,6 +18,7 @@ class Store: NSObject, ObservableObject {
     @Published var setup: Bool = false
     @Published var server: Server?
     @Published var host: Host?
+    @Published var isShowingLoading: Bool = false
     var timer: Timer = Timer()
     
     public func setHost(host: Host) {
@@ -40,7 +41,7 @@ class Store: NSObject, ObservableObject {
         self.timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: { _ in
             DispatchQueue.main.async {
                 print("updating list")
-                updateList(host: self.host!, update: { vals in
+                updateList(store: self, host: self.host!, update: { vals in
                     DispatchQueue.main.async {
                         self.objectWillChange.send()
                         self.torrents = vals

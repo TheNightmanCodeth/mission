@@ -10,6 +10,7 @@ import Combine
 import Logging
 import Foundation
 import KeychainAccess
+import AlertToast
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -39,6 +40,9 @@ struct ContentView: View {
         List(store.torrents, id: \.self) { torrent in
             ListRow(torrent: binding(for: torrent), store: store)
         }
+        .toast(isPresenting: $store.isShowingLoading) {
+            AlertToast(type: .loading)
+        }
         .onAppear(perform: {
             hosts.forEach { h in
                 if (h.isDefault) {
@@ -60,7 +64,7 @@ struct ContentView: View {
             }
             
             if (store.host != nil) {
-                updateList(host: store.host!, update: { vals in
+                updateList(store: store, host: store.host!, update: { vals in
                     DispatchQueue.main.async {
                         store.torrents = vals
                     }
@@ -79,6 +83,7 @@ struct ContentView: View {
                         Button(action: {
                             store.setHost(host: host)
                             store.startTimer()
+                            store.isShowingLoading.toggle()
                         }) {
                             let text = host.isDefault ? "\(host.name!) *" : host.name
                             Text(text!)
@@ -180,6 +185,7 @@ struct ContentView: View {
                         // Update the view
                         store.setHost(host: newHost)
                         store.startTimer()
+                        store.isShowingLoading.toggle()
                         store.setup.toggle()
                     }
                     .padding([.leading, .trailing], 20)
@@ -275,7 +281,7 @@ struct ContentView: View {
     }
 }
 
-func updateList(host: Host, update: @escaping ([Torrent]) -> Void) {
+func updateList(store: Store, host: Host, update: @escaping ([Torrent]) -> Void) {
     var config = TransmissionConfig()
     config.host = host.server
     config.port = Int(host.port)
@@ -284,7 +290,9 @@ func updateList(host: Host, update: @escaping ([Torrent]) -> Void) {
     let auth = TransmissionAuth(username: host.username!, password: keychain[host.name!]!)
     
     getTorrents(config: config, auth: auth, onReceived: { torrents in
-        // TODO: Check for null in `torrents` and show auth error
         update(torrents!)
+        DispatchQueue.main.async {
+            store.isShowingLoading = false
+        }
     })
 }
