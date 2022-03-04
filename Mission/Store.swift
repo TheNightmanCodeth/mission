@@ -90,8 +90,4 @@ class Store: NSObject, ObservableObject {
             }
         })
     }
-    
-    func updateServer(newHost: Host) {
-        self.setServer(host: newHost)
-    }
 }

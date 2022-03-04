@@ -17,7 +17,6 @@
 		D8217C1127C82C7E009ABA7C /* MissionUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8217C1027C82C7E009ABA7C /* MissionUITests.swift */; };
 		D8217C1327C82C7E009ABA7C /* MissionUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8217C1227C82C7E009ABA7C /* MissionUITestsLaunchTests.swift */; };
 		D8217C2427C82EDD009ABA7C /* Transmission.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8217C2327C82EDD009ABA7C /* Transmission.swift */; };
-		D83A426327C980FC00B558B6 /* TransmissionRpcClient in Frameworks */ = {isa = PBXBuildFile; productRef = D83A426227C980FC00B558B6 /* TransmissionRpcClient */; };
 		D83A42AB27CBEF7100B558B6 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83A42AA27CBEF7100B558B6 /* Persistence.swift */; };
 		D83A42AE27CBEFAB00B558B6 /* MissionStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D83A42AC27CBEFAB00B558B6 /* MissionStore.xcdatamodeld */; };
 		D83A42B127CDE3F700B558B6 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = D83A42B027CDE3F700B558B6 /* KeychainAccess */; };
@@ -66,7 +65,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				D83A42B127CDE3F700B558B6 /* KeychainAccess in Frameworks */,
-				D83A426327C980FC00B558B6 /* TransmissionRpcClient in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -175,7 +173,6 @@
 			);
 			name = Mission;
 			packageProductDependencies = (
-				D83A426227C980FC00B558B6 /* TransmissionRpcClient */,
 				D83A42B027CDE3F700B558B6 /* KeychainAccess */,
 			);
 			productName = Mission;
@@ -251,7 +248,6 @@
 			);
 			mainGroup = D8217BE827C82C7D009ABA7C;
 			packageReferences = (
-				D83A426127C980FC00B558B6 /* XCRemoteSwiftPackageReference "swift-transmission-rpc-client" */,
 				D83A42AF27CDE3F700B558B6 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 			);
 			productRefGroup = D8217BF227C82C7D009ABA7C /* Products */;
@@ -624,14 +620,6 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
-		D83A426127C980FC00B558B6 /* XCRemoteSwiftPackageReference "swift-transmission-rpc-client" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/S2Ler/swift-transmission-rpc-client.git";
-			requirement = {
-				branch = main;
-				kind = branch;
-			};
-		};
 		D83A42AF27CDE3F700B558B6 /* XCRemoteSwiftPackageReference "KeychainAccess" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/kishikawakatsumi/KeychainAccess";
@@ -643,11 +631,6 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
-		D83A426227C980FC00B558B6 /* TransmissionRpcClient */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D83A426127C980FC00B558B6 /* XCRemoteSwiftPackageReference "swift-transmission-rpc-client" */;
-			productName = TransmissionRpcClient;
-		};
 		D83A42B027CDE3F700B558B6 /* KeychainAccess */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = D83A42AF27CDE3F700B558B6 /* XCRemoteSwiftPackageReference "KeychainAccess" */;

@@ -13,6 +13,10 @@ import KeychainAccess
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
+    @FetchRequest(
+        entity: Host.entity(),
+        sortDescriptors: [NSSortDescriptor(key: "name", ascending: true)]
+    ) var hosts: FetchedResults<Host>
 
     @ObservedObject var store: Store = Store()
     
@@ -27,6 +31,7 @@ struct ContentView: View {
     @State private var userInput = ""
     @State private var passInput = ""
     @State private var filename  = ""
+    @State private var isDefault = false
     
     var body: some View {
         
@@ -36,9 +41,20 @@ struct ContentView: View {
         .navigationTitle("Mission")
         .toolbar {
             ToolbarItem(placement: .status) {
-                Button(action: {
-                    store.setup.toggle()
-                }) {
+                Menu {
+                    ForEach(hosts, id: \.self) { host in
+                        Button(action: {
+                            store.setServer(host: host)
+                            store.startTimer()
+                        }) {
+                            let text = host.isDefault ? "\(host.name!) *" : host.name
+                            Text(text!)
+                        }
+                    }
+                    Button(action: {store.setup.toggle()}) {
+                        Text("Add new...")
+                    }
+                } label: {
                     Image(systemName: "network")
                 }
             }
@@ -67,28 +83,42 @@ struct ContentView: View {
                     }).buttonStyle(BorderlessButtonStyle())
                 }
                 Text("Add a server with it's URL and login")
-                    .padding()
+                    .padding([.leading, .trailing], 20)
+                    .padding(.bottom, 5)
                 TextField(
                     "Nickname",
                     text: $nameInput
-                ).padding()
+                )
+                    .padding([.leading, .trailing], 20)
+                    .padding([.top, .bottom], 5)
                 TextField(
                     "Hostname (no http://)",
                     text: $hostInput
-                ).padding()
+                )
+                    .padding([.leading, .trailing], 20)
+                    .padding([.top, .bottom], 5)
                 TextField(
                     "port",
                     text: $portInput
-                ).padding()
+                )
+                    .padding([.leading, .trailing], 20)
+                    .padding([.top, .bottom], 5)
                 TextField(
                     "Username",
                     text: $userInput
-                ).padding()
+                )
+                    .padding([.leading, .trailing], 20)
+                    .padding([.top, .bottom], 5)
                 TextField(
                     "Password",
                     text: $passInput
-                ).padding()
+                )
+                    .padding([.leading, .trailing], 20)
+                    .padding([.top, .bottom], 5)
                 HStack {
+                    Toggle("Make default", isOn: $isDefault)
+                        .padding(.leading, 20)
+                        .padding(.bottom, 10)
                     Spacer()
                     Button("Submit") {
                         // Save host
@@ -97,6 +127,17 @@ struct ContentView: View {
                         newHost.server = hostInput
                         newHost.port = Int16(portInput)!
                         newHost.username = userInput
+                        newHost.isDefault = isDefault
+                        
+                        // Make sure nobody else is default
+                        if (isDefault) {
+                            hosts.forEach { h in
+                                if (h.isDefault) {
+                                    h.isDefault.toggle()
+                                }
+                            }
+                        }
+                        
                         try? viewContext.save()
                         
                         // Save password to keychain
@@ -105,10 +146,12 @@ struct ContentView: View {
                         
                         // Update the view
                         store.setServer(host: newHost)
-                        store.updateServer(newHost: newHost)
                         store.startTimer()
                         store.setup.toggle()
-                    }.padding()
+                    }
+                    .padding([.leading, .trailing], 20)
+                    .padding(.top, 5)
+                    .padding(.bottom, 10)
                 }
             }
         })
