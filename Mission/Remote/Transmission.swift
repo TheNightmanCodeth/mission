@@ -159,7 +159,7 @@ public func addTorrent(fileUrl: String, auth: TransmissionAuth, file: Bool, conf
     } else {
         torrentBody = TransmissionRequest(
             method: "torrent-add",
-            arguments: ["fileName": fileUrl]
+            arguments: ["filename": fileUrl]
         )
     }
     

@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Combine
-import Logging
 import Foundation
 import KeychainAccess
 import AlertToast
@@ -36,7 +35,6 @@ struct ContentView: View {
     @State private var isDefault = false
     
     var body: some View {
-        
         List(store.torrents, id: \.self) { torrent in
             ListRow(torrent: binding(for: torrent), store: store)
         }
@@ -52,7 +50,6 @@ struct ContentView: View {
                     store.setHost(host: h)
                 }
             }
-            
             if (store.server == nil) {
                 if (!hosts.isEmpty) {
                     let host = hosts[0]
@@ -62,7 +59,6 @@ struct ContentView: View {
                     store.setHost(host: host)
                 }
             }
-            
             if (store.host != nil) {
                 updateList(store: store, host: store.host!, update: { vals in
                     DispatchQueue.main.async {
@@ -104,6 +100,7 @@ struct ContentView: View {
                 }
             }
         }
+        // Add server sheet
         .sheet(isPresented: $store.setup, onDismiss: {}, content: {
             VStack {
                 HStack {
@@ -194,6 +191,7 @@ struct ContentView: View {
                 }
             }
         })
+        // Add torrent alert
         .sheet(isPresented: $isShowingAddAlert, onDismiss: {}, content: {
             VStack {
                 HStack {
