@@ -22,6 +22,16 @@ struct TransmissionRemoveArgs: Codable {
     }
 }
 
+public enum TorrentStatus {
+    case stopped
+    case checkingWait
+    case checking
+    case downloadWait
+    case downloading
+    case seedWait
+    case seeding
+}
+
 struct TransmissionRemoveRequest: Codable {
     var method: String
     var arguments: TransmissionRemoveArgs
@@ -51,6 +61,9 @@ public struct Torrent: Codable, Hashable {
     let name: String
     let totalSize: Int
     let percentDone: Double
+    let status: Int
+    let sendingToUs: Int
+    let peersConnected: Int
 }
 
 public enum TransmissionResponse {
@@ -79,7 +92,7 @@ public func getTorrents(config: TransmissionConfig, auth: TransmissionAuth, onRe
     let listReq = TransmissionListRequest(
         method: "torrent-get",
         arguments: [
-            "fields": [ "id", "name", "totalSize", "percentDone" ]
+            "fields": [ "id", "name", "totalSize", "percentDone", "status", "sendingToUs", "peersConnected" ]
         ]
     )
     

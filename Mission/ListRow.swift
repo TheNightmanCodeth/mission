@@ -19,7 +19,18 @@ struct ListRow: View {
                 Text(torrent.name)
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .topLeading)
+                    .padding(.bottom, 1)
                 ProgressView(value: torrent.percentDone)
+                    .progressViewStyle(LinearProgressViewStyle(tint: torrent.status == 6 ? Color.green : Color.blue))
+                let status = torrent.status == 6 ?
+                    "Seeding to \(torrent.peersConnected - torrent.sendingToUs) of \(torrent.peersConnected) peers" :
+                torrent.status == 0 ? "Stopped" :
+                    "Downloading from \(torrent.sendingToUs) of \(torrent.peersConnected) peers"
+                
+                Text(status)
+                    .font(.custom("sub", size: 10))
+                    .fixedSize(horizontal: false, vertical: true)
+                    .frame(maxWidth: .infinity, alignment: .topLeading)
             }.padding(.all, 10)
             Menu {
                 Button("Delete", action: {
