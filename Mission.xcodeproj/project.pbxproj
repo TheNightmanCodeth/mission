@@ -58,6 +58,7 @@
 		D83A426427C99F6000B558B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		D83A42AA27CBEF7100B558B6 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		D83A42AD27CBEFAB00B558B6 /* MissionStore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MissionStore.xcdatamodel; sourceTree = "<group>"; };
+		D8F05BB627D2AAA80067CB10 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +91,7 @@
 		D8217BE827C82C7D009ABA7C = {
 			isa = PBXGroup;
 			children = (
+				D8F05BB627D2AAA80067CB10 /* README.md */,
 				D8217BF327C82C7D009ABA7C /* Mission */,
 				D8217C0527C82C7E009ABA7C /* MissionTests */,
 				D8217C0F27C82C7E009ABA7C /* MissionUITests */,
