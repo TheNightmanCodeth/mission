@@ -10,6 +10,7 @@ import Combine
 import Foundation
 import KeychainAccess
 import AlertToast
+import UniformTypeIdentifiers
 
 struct ContentView: View {
     @Environment(\.managedObjectContext) private var viewContext
@@ -33,6 +34,7 @@ struct ContentView: View {
     @State private var passInput = ""
     @State private var filename  = ""
     @State private var isDefault = false
+    @State private var downloadDir = ""
     
     var body: some View {
         List(store.torrents, id: \.self) { torrent in
@@ -210,7 +212,7 @@ struct ContentView: View {
                     }).buttonStyle(BorderlessButtonStyle())
                 }
                 
-                Text("Add either a magnet link or .torrent file")
+                Text("Add either a magnet link or .torrent file. Enter the download directory before choosing a file")
                     .font(.body)
                     .padding(.leading, 20)
                     .padding(.trailing, 20)
@@ -222,14 +224,18 @@ struct ContentView: View {
                     // TODO: Validate entry
                 }.padding()
                 
+                TextField(
+                    "Download directory",
+                    text: $downloadDir
+                ).padding()
+                
                 HStack {
                     Button("Upload file") {
                         // Show file chooser panel
                         let panel = NSOpenPanel()
                         panel.allowsMultipleSelection = false
                         panel.canChooseDirectories = false
-                        // TODO: Figure out how the hell to use [UTTYpe]
-                        panel.allowedFileTypes = ["torrent"]
+                        panel.allowedContentTypes = [.torrent]
                         
                         if panel.runModal() == .OK {
                             // Convert the file to a base64 string
@@ -242,7 +248,7 @@ struct ContentView: View {
                             let keychain = Keychain(service: "me.jdiggity.mission")
                             let password = keychain[store.host!.name!]
                             let auth = TransmissionAuth(username: store.host!.username!, password: password!)
-                            addTorrent(fileUrl: fileStream, auth: auth, file: true, config: config, onAdd: { response in
+                            addTorrent(fileUrl: fileStream, saveLocation: downloadDir, auth: auth, file: true, config: config, onAdd: { response in
                                 if response == TransmissionResponse.success {
                                     self.isShowingAddAlert.toggle()
                                 }
@@ -259,7 +265,7 @@ struct ContentView: View {
                         let keychain = Keychain(service: "me.jdiggity.mission")
                         let password = keychain[store.host!.name!]
                         let auth = TransmissionAuth(username: store.host!.username!, password: password!)
-                        addTorrent(fileUrl: alertInput, auth: auth, file: false, config: config, onAdd: { response in
+                        addTorrent(fileUrl: alertInput, saveLocation: downloadDir, auth: auth, file: false, config: config, onAdd: { response in
                             if response == TransmissionResponse.success {
                                 self.isShowingAddAlert.toggle()
                             }
@@ -293,4 +299,10 @@ func updateList(store: Store, host: Host, update: @escaping ([Torrent]) -> Void)
             store.isShowingLoading = false
         }
     })
+}
+
+extension UTType {
+    static var torrent: UTType {
+        UTType.types(tag: "torrent", tagClass: .filenameExtension, conformingTo: nil).first!
+    }
 }

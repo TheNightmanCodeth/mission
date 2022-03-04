@@ -142,7 +142,7 @@ public func getTorrents(config: TransmissionConfig, auth: TransmissionAuth, onRe
 /// - Parameter file: A boolean value; true if `fileUrl` is a base64 encoded file and false if `fileUrl` is a magnet link
 /// - Parameter config: A `TransmissionConfig` containing the server's address and port
 /// - Parameter onAdd: An escaping function that receives the servers response code represented as a `TransmissionResponse`
-public func addTorrent(fileUrl: String, auth: TransmissionAuth, file: Bool, config: TransmissionConfig, onAdd: @escaping (TransmissionResponse) -> Void) -> Void {
+public func addTorrent(fileUrl: String, saveLocation: String, auth: TransmissionAuth, file: Bool, config: TransmissionConfig, onAdd: @escaping (TransmissionResponse) -> Void) -> Void {
     url = config
     url?.scheme = "http"
     url?.path = "/transmission/rpc"
@@ -154,12 +154,12 @@ public func addTorrent(fileUrl: String, auth: TransmissionAuth, file: Bool, conf
     if (file) {
         torrentBody = TransmissionRequest (
             method: "torrent-add",
-            arguments: ["metainfo": fileUrl]
+            arguments: ["metainfo": fileUrl, "download-dir": saveLocation]
         )
     } else {
         torrentBody = TransmissionRequest(
             method: "torrent-add",
-            arguments: ["filename": fileUrl]
+            arguments: ["filename": fileUrl, "download-dir": saveLocation]
         )
     }
     
@@ -181,7 +181,7 @@ public func addTorrent(fileUrl: String, auth: TransmissionAuth, file: Bool, conf
         switch httpResp?.statusCode {
         case 409?: // If we get a 409, save the token and try again
             authorize(httpResp: httpResp)
-            addTorrent(fileUrl: fileUrl, auth: auth, file: file, config: config, onAdd: onAdd)
+            addTorrent(fileUrl: fileUrl, saveLocation: saveLocation, auth: auth, file: file, config: config, onAdd: onAdd)
             return
         case 401?:
             return onAdd(TransmissionResponse.forbidden)
