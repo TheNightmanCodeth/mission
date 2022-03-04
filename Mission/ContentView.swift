@@ -19,6 +19,7 @@ struct ContentView: View {
     ) var hosts: FetchedResults<Host>
 
     @ObservedObject var store: Store = Store()
+    private var keychain = Keychain(service: "me.jdiggity.mission")
     
     @State private var isShowingAddAlert = false
     @State private var isShowingAuthAlert = false
@@ -38,13 +39,45 @@ struct ContentView: View {
         List(store.torrents, id: \.self) { torrent in
             ListRow(torrent: binding(for: torrent), store: store)
         }
+        .onAppear(perform: {
+            hosts.forEach { h in
+                if (h.isDefault) {
+                    var config = TransmissionConfig()
+                    config.host = h.server
+                    config.port = Int(h.port)
+                    store.setHost(host: h)
+                }
+            }
+            
+            if (store.server == nil) {
+                if (!hosts.isEmpty) {
+                    let host = hosts[0]
+                    var config = TransmissionConfig()
+                    config.host = host.server
+                    config.port = Int(host.port)
+                    store.setHost(host: host)
+                }
+            }
+            
+            if (store.host != nil) {
+                updateList(host: store.host!, update: { vals in
+                    DispatchQueue.main.async {
+                        store.torrents = vals
+                    }
+                })
+                store.startTimer()
+            } else {
+                // Create a new host
+                store.setup = true
+            }
+        })
         .navigationTitle("Mission")
         .toolbar {
             ToolbarItem(placement: .status) {
                 Menu {
                     ForEach(hosts, id: \.self) { host in
                         Button(action: {
-                            store.setServer(host: host)
+                            store.setHost(host: host)
                             store.startTimer()
                         }) {
                             let text = host.isDefault ? "\(host.name!) *" : host.name
@@ -145,7 +178,7 @@ struct ContentView: View {
                         keychain[nameInput] = passInput
                         
                         // Update the view
-                        store.setServer(host: newHost)
+                        store.setHost(host: newHost)
                         store.startTimer()
                         store.setup.toggle()
                     }
