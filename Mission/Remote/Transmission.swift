@@ -257,6 +257,70 @@ public func deleteTorrent(torrent: Torrent, erase: Bool, config: TransmissionCon
     task.resume()
 }
 
+struct TransmissionSessionRequest: Codable {
+    let method: String
+    let arguments: [String]
+}
+
+struct TransmissionSessionArguments: Codable {
+    let downloadDir: String
+    
+    enum CodingKeys: String, CodingKey {
+        case downloadDir = "download-dir"
+    }
+}
+
+struct TransmissionSessionResponse: Codable {
+    let arguments: TransmissionSessionArguments
+}
+
+public func getDefaultDownloadDir(config: TransmissionConfig, auth: TransmissionAuth, onResponse: @escaping (String) -> Void) {
+    url = config
+    url?.scheme = "http"
+    url?.path = "/transmission/rpc"
+    url?.port = config.port ?? 443
+    
+    let torrentBody = TransmissionSessionRequest(
+        method: "session-get",
+        arguments: ["download-dir"]
+    )
+    
+    // Create the request with auth values
+    var req = URLRequest(url: url!.url!)
+    req.httpMethod = "POST"
+    req.httpBody = try? JSONEncoder().encode(torrentBody)
+    req.setValue("application/json", forHTTPHeaderField: "Content-Type")
+    req.setValue(lastSessionToken, forHTTPHeaderField: TOKEN_HEAD)
+    let loginString = String(format: "%@:%@", auth.username, auth.password)
+    let loginData = loginString.data(using: String.Encoding.utf8)!
+    let base64LoginString = loginData.base64EncodedString()
+    req.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
+    
+    let task = URLSession.shared.dataTask(with: req) { (data, resp, error) in
+        if error != nil {
+            return onResponse("CONFIG_ERR")
+        }
+        
+        let httpResp = resp as? HTTPURLResponse
+        // Call `onAdd` with the status code
+        switch httpResp?.statusCode {
+        case 409?: // If we get a 409, save the token and try again
+            authorize(httpResp: httpResp)
+            getDefaultDownloadDir(config: config, auth: auth, onResponse: onResponse)
+            return
+        case 401?:
+            return onResponse("FORBIDDEN")
+        case 200?:
+            let response = try? JSONDecoder().decode(TransmissionSessionResponse.self, from: data!)
+            let downloadDir = response?.arguments.downloadDir
+            return onResponse(downloadDir!)
+        default:
+            return onResponse("DEFAULT")
+        }
+    }
+    task.resume()
+}
+
 public func authorize(httpResp: HTTPURLResponse?) {
     let mixedHeaders = httpResp?.allHeaderFields as! [String: Any]
     lastSessionToken = mixedHeaders[TOKEN_HEAD] as? String

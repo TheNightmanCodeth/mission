@@ -19,6 +19,7 @@ class Store: NSObject, ObservableObject {
     @Published var server: Server?
     @Published var host: Host?
     @Published var isShowingLoading: Bool = false
+    @Published var defaultDownloadDir: String = ""
     var timer: Timer = Timer()
     
     public func setHost(host: Host) {

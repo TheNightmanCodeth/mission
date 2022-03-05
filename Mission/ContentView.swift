@@ -62,6 +62,16 @@ struct ContentView: View {
                 }
             }
             if (store.host != nil) {
+                var config = TransmissionConfig()
+                config.host = store.host?.server
+                config.port = Int(store.host!.port)
+                let keychain = Keychain(service: "me.jdiggity.mission")
+                let password = keychain[store.host!.name!]
+                let auth = TransmissionAuth(username: store.host!.username!, password: password!)
+                getDefaultDownloadDir(config: config, auth: auth, onResponse: { downloadDir in
+                    store.defaultDownloadDir = downloadDir
+                    self.downloadDir = store.defaultDownloadDir
+                })
                 updateList(store: store, host: store.host!, update: { vals in
                     DispatchQueue.main.async {
                         store.torrents = vals
