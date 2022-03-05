@@ -69,8 +69,10 @@ struct ContentView: View {
                 let password = keychain[store.host!.name!]
                 let auth = TransmissionAuth(username: store.host!.username!, password: password!)
                 getDefaultDownloadDir(config: config, auth: auth, onResponse: { downloadDir in
-                    store.defaultDownloadDir = downloadDir
-                    self.downloadDir = store.defaultDownloadDir
+                    DispatchQueue.main.async {
+                        store.defaultDownloadDir = downloadDir
+                        self.downloadDir = store.defaultDownloadDir
+                    }
                 })
                 updateList(store: store, host: store.host!, update: { vals in
                     DispatchQueue.main.async {
