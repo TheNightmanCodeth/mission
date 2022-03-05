@@ -224,7 +224,9 @@ struct ContentView: View {
                     }).buttonStyle(BorderlessButtonStyle())
                 }
                 
-                Text("Add either a magnet link or .torrent file. Enter the download directory before choosing a file")
+                Text("Add either a magnet link or .torrent file.")
+                    .fixedSize(horizontal: true, vertical: true)
+                    .frame(maxWidth: 200, alignment: .center)
                     .font(.body)
                     .padding(.leading, 20)
                     .padding(.trailing, 20)
