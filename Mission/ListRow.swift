@@ -21,17 +21,24 @@ struct ListRow: View {
                     .frame(maxWidth: .infinity, alignment: .topLeading)
                     .padding(.bottom, 1)
                 ProgressView(value: torrent.percentDone)
-                    .progressViewStyle(LinearProgressViewStyle(tint: torrent.status == 6 ? Color.green : Color.blue))
-                let status = torrent.status == 6 ?
+                    .progressViewStyle(LinearProgressViewStyle(tint: torrent.status == TorrentStatus.seeding.rawValue ? Color.green : Color.blue))
+                let status = torrent.status == TorrentStatus.seeding.rawValue ?
                     "Seeding to \(torrent.peersConnected - torrent.sendingToUs) of \(torrent.peersConnected) peers" :
-                torrent.status == 0 ? "Stopped" :
+                torrent.status == TorrentStatus.stopped.rawValue ? "Stopped" :
                     "Downloading from \(torrent.sendingToUs) of \(torrent.peersConnected) peers"
                 
                 Text(status)
                     .font(.custom("sub", size: 10))
                     .fixedSize(horizontal: false, vertical: true)
                     .frame(maxWidth: .infinity, alignment: .topLeading)
-            }.padding(.all, 10)
+            }.padding([.top, .bottom, .leading], 10)
+                .padding(.trailing, 5)
+            Button(action: {}, label: {
+                Image(systemName: torrent.status == TorrentStatus.stopped.rawValue ? "play.circle" : "pause.circle")
+            })
+                .buttonStyle(BorderlessButtonStyle())
+                .frame(width: 10, height: 10, alignment: .center)
+                .padding(.trailing, 5)
             Menu {
                 Button("Delete", action: {
                     var config = TransmissionConfig()
@@ -44,6 +51,9 @@ struct ListRow: View {
                     deleteTorrent(torrent: torrent, erase: false, config: config, auth: auth, onDel: { response in
                         // TODO: Handle response
                     })
+                })
+                Button("Download", action: {
+                    // TODO: Download the destination folder using sftp library
                 })
             } label: {
                 

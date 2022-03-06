@@ -12,6 +12,20 @@ public typealias TransmissionConfig = URLComponents
 var lastSessionToken: String?
 var url: TransmissionConfig?
 
+/// The rpc-spec represents the status of a torrent using an integer value. We use
+/// this enum to improve readability and make things a little easier for poor ol' Joe
+public enum TorrentStatus: Int {
+    case stopped = 0
+    case checkingWait = 1
+    case checking = 2
+    case downloadWait = 3
+    case downloading = 4
+    case seedWait = 5
+    case seeding = 6
+}
+
+/// The remove body is weird and the delete-local-data argument has hyphens in it
+/// so we need **another** dictionary with `CodingKeys` to make it work
 struct TransmissionRemoveArgs: Codable {
     var ids: [Int]
     var deleteLocalData: Bool
@@ -22,31 +36,27 @@ struct TransmissionRemoveArgs: Codable {
     }
 }
 
-public enum TorrentStatus {
-    case stopped
-    case checkingWait
-    case checking
-    case downloadWait
-    case downloading
-    case seedWait
-    case seeding
-}
-
 struct TransmissionRemoveRequest: Codable {
     var method: String
     var arguments: TransmissionRemoveArgs
 }
 
+/// A standard request containing a list of string-only arguments.
 struct TransmissionRequest: Codable {
     let method: String
     let arguments: [String: String]
 }
 
+/// A request sent to the server asking for a list of torrents and certain properties
+/// - Parameter method: Should always be "torrent-get"
+/// - Parameter arguments: Takes a list of properties we are interested in called "fields". See RPC-Spec
 struct TransmissionListRequest: Codable {
     let method: String
     let arguments: [String: [String]]
 }
 
+/// A response from the server sent after a torrent-get request
+/// - Parameter arguments: A list containing the torrents we asked for and their properties
 struct TransmissionListResponse: Codable {
     let arguments: [String: [Torrent]]
 }
@@ -298,6 +308,51 @@ public func getDefaultDownloadDir(config: TransmissionConfig, auth: Transmission
             return onResponse(downloadDir!)
         default:
             return onResponse("DEFAULT")
+        }
+    }
+    task.resume()
+}
+
+/// A torrent action request (see rpc-spec)
+///
+/// - Parameter method: One of [torrent-start, torrent-stop]. See RPC-Spec
+/// - Parameter arguments: A list of torrent ids to perform the action on
+struct TorrentActionRequest: Codable {
+    let method: String
+    let arguments: [String: [Int]]
+}
+
+public func playPause(torrent: Torrent, config: TransmissionConfig, auth: TransmissionAuth, onResponse: @escaping (TransmissionResponse) -> Void) {
+    url = config
+    url?.scheme = "http"
+    url?.path = "/transmission/rpc"
+    url?.port = config.port ?? 443
+    
+    let requestBody = TorrentActionRequest(
+        method: "torrent-start",
+        arguments: ["ids": [torrent.id]]
+    )
+    
+    let req = makeRequest(requestBody: requestBody, auth: auth)
+    
+    let task = URLSession.shared.dataTask(with: req) { (data, resp, err) in
+        if err != nil {
+            onResponse(TransmissionResponse.configError)
+        }
+        
+        let httpResp = resp as? HTTPURLResponse
+        // Call `onAdd` with the status code
+        switch httpResp?.statusCode {
+        case 409?: // If we get a 409, save the token and try again
+            authorize(httpResp: httpResp)
+            playPause(torrent: torrent, config: config, auth: auth, onResponse: onResponse)
+            return
+        case 401?:
+            return onResponse(TransmissionResponse.forbidden)
+        case 200?:
+            return onResponse(TransmissionResponse.success)
+        default:
+            return onResponse(TransmissionResponse.failed)
         }
     }
     task.resume()
