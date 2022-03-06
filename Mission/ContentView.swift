@@ -52,15 +52,6 @@ struct ContentView: View {
                     store.setHost(host: h)
                 }
             }
-            if (store.server == nil) {
-                if (!hosts.isEmpty) {
-                    let host = hosts[0]
-                    var config = TransmissionConfig()
-                    config.host = host.server
-                    config.port = Int(host.port)
-                    store.setHost(host: host)
-                }
-            }
             if (store.host != nil) {
                 let info = makeConfig(store: store)
                 getDefaultDownloadDir(config: info.config, auth: info.auth, onResponse: { downloadDir in
@@ -69,7 +60,7 @@ struct ContentView: View {
                         self.downloadDir = store.defaultDownloadDir
                     }
                 })
-                updateList(store: store, host: store.host!, update: { vals in
+                updateList(store: store, update: { vals in
                     DispatchQueue.main.async {
                         store.torrents = vals
                     }
@@ -77,6 +68,7 @@ struct ContentView: View {
                 store.startTimer()
             } else {
                 // Create a new host
+                isDefault = true
                 store.setup = true
             }
         })
@@ -142,7 +134,7 @@ struct ContentView: View {
                     .padding([.leading, .trailing], 20)
                     .padding([.top, .bottom], 5)
                 TextField(
-                    "port",
+                    "Port",
                     text: $portInput
                 )
                     .padding([.leading, .trailing], 20)
@@ -153,7 +145,7 @@ struct ContentView: View {
                 )
                     .padding([.leading, .trailing], 20)
                     .padding([.top, .bottom], 5)
-                TextField(
+                SecureField(
                     "Password",
                     text: $passInput
                 )
@@ -163,6 +155,7 @@ struct ContentView: View {
                     Toggle("Make default", isOn: $isDefault)
                         .padding(.leading, 20)
                         .padding(.bottom, 10)
+                        .disabled(store.host == nil)
                     Spacer()
                     Button("Submit") {
                         // TODO: If there are no servers yet, make this one default.
@@ -188,6 +181,13 @@ struct ContentView: View {
                         // Save password to keychain
                         let keychain = Keychain(service: "me.jdiggity.mission")
                         keychain[nameInput] = passInput
+                        
+                        // Reset fields
+                        nameInput = ""
+                        hostInput = ""
+                        portInput = ""
+                        userInput = ""
+                        passInput = ""
                         
                         // Update the view
                         store.setHost(host: newHost)
@@ -286,15 +286,10 @@ struct ContentView: View {
     }
 }
 
-func updateList(store: Store, host: Host, update: @escaping ([Torrent]) -> Void) {
-    var config = TransmissionConfig()
-    config.host = host.server
-    config.port = Int(host.port)
-    
-    let keychain = Keychain(service: "me.jdiggity.mission")
-    let auth = TransmissionAuth(username: host.username!, password: keychain[host.name!]!)
-    
-    getTorrents(config: config, auth: auth, onReceived: { torrents in
+/// Updates the list of torrents when called
+func updateList(store: Store, update: @escaping ([Torrent]) -> Void) {
+    let info = makeConfig(store: store)
+    getTorrents(config: info.config, auth: info.auth, onReceived: { torrents in
         update(torrents!)
         DispatchQueue.main.async {
             store.isShowingLoading = false
@@ -302,6 +297,9 @@ func updateList(store: Store, host: Host, update: @escaping ([Torrent]) -> Void)
     })
 }
 
+/// Function for generating config and auth for API calls
+/// - Parameter store: The current `Store` containing session information needed for creating the config.
+/// - Returns a tuple containing the requested `config` and `auth`
 func makeConfig(store: Store) -> (config: TransmissionConfig, auth: TransmissionAuth) {
     // Send the file to the server
     var config = TransmissionConfig()
@@ -314,6 +312,9 @@ func makeConfig(store: Store) -> (config: TransmissionConfig, auth: Transmission
     return (config: config, auth: auth)
 }
 
+
+// This is needed to silence buildtime warnings related to the filepicker.
+// `.allowedFileTypes` was deprecated in favor of this attrocity. No comment <3
 extension UTType {
     static var torrent: UTType {
         UTType.types(tag: "torrent", tagClass: .filenameExtension, conformingTo: nil).first!

@@ -42,7 +42,7 @@ class Store: NSObject, ObservableObject {
         self.timer = Timer.scheduledTimer(withTimeInterval: 5, repeats: true, block: { _ in
             DispatchQueue.main.async {
                 print("updating list")
-                updateList(store: self, host: self.host!, update: { vals in
+                updateList(store: self, update: { vals in
                     DispatchQueue.main.async {
                         self.objectWillChange.send()
                         self.torrents = vals
