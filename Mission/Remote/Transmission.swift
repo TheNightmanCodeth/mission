@@ -237,11 +237,12 @@ public func deleteTorrent(torrent: Torrent, erase: Bool, config: TransmissionCon
     task.resume()
 }
 
-struct TransmissionSessionRequest: Codable {
-    let method: String
-    let arguments: [String]
-}
-
+/* The transmission-session response is a disaster that can only
+ handle returning every single property of the session all at once.
+ There doesn't appear to be any way to only receive a single or set of
+ properties. Luckily we can just add the properties we want to this
+ struct, we'll just need to add on any other arguments we might want to
+ use in the future. */
 struct TransmissionSessionArguments: Codable {
     let downloadDir: String
     
@@ -270,9 +271,9 @@ public func getDefaultDownloadDir(config: TransmissionConfig, auth: Transmission
     url?.path = "/transmission/rpc"
     url?.port = config.port ?? 443
     
-    let requestBody = TransmissionSessionRequest(
+    let requestBody = TransmissionRequest(
         method: "session-get",
-        arguments: []
+        arguments: [:]
     )
     
     let req = makeRequest(requestBody: requestBody, auth: auth)
