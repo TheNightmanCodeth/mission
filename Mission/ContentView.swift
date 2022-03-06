@@ -62,13 +62,8 @@ struct ContentView: View {
                 }
             }
             if (store.host != nil) {
-                var config = TransmissionConfig()
-                config.host = store.host?.server
-                config.port = Int(store.host!.port)
-                let keychain = Keychain(service: "me.jdiggity.mission")
-                let password = keychain[store.host!.name!]
-                let auth = TransmissionAuth(username: store.host!.username!, password: password!)
-                getDefaultDownloadDir(config: config, auth: auth, onResponse: { downloadDir in
+                let info = makeConfig(store: store)
+                getDefaultDownloadDir(config: info.config, auth: info.auth, onResponse: { downloadDir in
                     DispatchQueue.main.async {
                         store.defaultDownloadDir = downloadDir
                         self.downloadDir = store.defaultDownloadDir
@@ -170,6 +165,7 @@ struct ContentView: View {
                         .padding(.bottom, 10)
                     Spacer()
                     Button("Submit") {
+                        // TODO: If there are no servers yet, make this one default.
                         // Save host
                         let newHost = Host(context: viewContext)
                         newHost.name = nameInput
@@ -255,14 +251,10 @@ struct ContentView: View {
                             // Convert the file to a base64 string
                             let fileData = try! Data.init(contentsOf: panel.url!)
                             let fileStream: String = fileData.base64EncodedString(options: NSData.Base64EncodingOptions.init(rawValue: 0))
-                            // Send the file to the server
-                            var config = TransmissionConfig()
-                            config.host = store.host?.server
-                            config.port = Int(store.host!.port)
-                            let keychain = Keychain(service: "me.jdiggity.mission")
-                            let password = keychain[store.host!.name!]
-                            let auth = TransmissionAuth(username: store.host!.username!, password: password!)
-                            addTorrent(fileUrl: fileStream, saveLocation: downloadDir, auth: auth, file: true, config: config, onAdd: { response in
+                            
+                            let info = makeConfig(store: store)
+                            
+                            addTorrent(fileUrl: fileStream, saveLocation: downloadDir, auth: info.auth, file: true, config: info.config, onAdd: { response in
                                 if response == TransmissionResponse.success {
                                     self.isShowingAddAlert.toggle()
                                 }
@@ -273,13 +265,8 @@ struct ContentView: View {
                     Spacer()
                     Button("Submit") {
                         // Send the magnet link to the server
-                        var config = TransmissionConfig()
-                        config.host = store.host?.server
-                        config.port = Int(store.host!.port)
-                        let keychain = Keychain(service: "me.jdiggity.mission")
-                        let password = keychain[store.host!.name!]
-                        let auth = TransmissionAuth(username: store.host!.username!, password: password!)
-                        addTorrent(fileUrl: alertInput, saveLocation: downloadDir, auth: auth, file: false, config: config, onAdd: { response in
+                        let info = makeConfig(store: store)
+                        addTorrent(fileUrl: alertInput, saveLocation: downloadDir, auth: info.auth, file: false, config: info.config, onAdd: { response in
                             if response == TransmissionResponse.success {
                                 self.isShowingAddAlert.toggle()
                             }
@@ -313,6 +300,18 @@ func updateList(store: Store, host: Host, update: @escaping ([Torrent]) -> Void)
             store.isShowingLoading = false
         }
     })
+}
+
+private func makeConfig(store: Store) -> (config: TransmissionConfig, auth: TransmissionAuth) {
+    // Send the file to the server
+    var config = TransmissionConfig()
+    config.host = store.host?.server
+    config.port = Int(store.host!.port)
+    let keychain = Keychain(service: "me.jdiggity.mission")
+    let password = keychain[store.host!.name!]
+    let auth = TransmissionAuth(username: store.host!.username!, password: password!)
+    
+    return (config: config, auth: auth)
 }
 
 extension UTType {
