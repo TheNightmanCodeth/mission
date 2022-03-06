@@ -89,23 +89,15 @@ public func getTorrents(config: TransmissionConfig, auth: TransmissionAuth, onRe
     url?.path = "/transmission/rpc"
     url?.port = config.port ?? 443
     
-    let listReq = TransmissionListRequest(
+    let requestBody = TransmissionListRequest(
         method: "torrent-get",
         arguments: [
             "fields": [ "id", "name", "totalSize", "percentDone", "status", "sendingToUs", "peersConnected" ]
         ]
     )
     
-    // Create request and authorization headers
-    var req = URLRequest(url: url!.url!)
-    let loginString = String(format: "%@:%@", auth.username, auth.password)
-    let loginData = loginString.data(using: String.Encoding.utf8)!
-    let base64LoginString = loginData.base64EncodedString()
-    req.httpMethod = "POST"
-    req.httpBody = try? JSONEncoder().encode(listReq)
-    req.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
-    req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    req.setValue(lastSessionToken, forHTTPHeaderField: TOKEN_HEAD)
+    // Create the request with auth values
+    let req = makeRequest(requestBody: requestBody, auth: auth)
     
     // Send the request
     let task = URLSession.shared.dataTask(with: req) { (data, resp, error) in
@@ -149,26 +141,22 @@ public func addTorrent(fileUrl: String, saveLocation: String, auth: Transmission
     url?.port = config.port ?? 443
     
     // Create the torrent body based on the value of `fileUrl` and `file`
-    var torrentBody: TransmissionRequest? = nil
+    var requestBody: TransmissionRequest? = nil
     
     if (file) {
-        torrentBody = TransmissionRequest (
+        requestBody = TransmissionRequest (
             method: "torrent-add",
             arguments: ["metainfo": fileUrl, "download-dir": saveLocation]
         )
     } else {
-        torrentBody = TransmissionRequest(
+        requestBody = TransmissionRequest(
             method: "torrent-add",
             arguments: ["filename": fileUrl, "download-dir": saveLocation]
         )
     }
     
     // Create the request with auth values
-    var req: URLRequest = makeRequest(setTorrentBody: torrentBody!)
-    let loginString = String(format: "%@:%@", auth.username, auth.password)
-    let loginData = loginString.data(using: String.Encoding.utf8)!
-    let base64LoginString = loginData.base64EncodedString()
-    req.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
+    let req: URLRequest = makeRequest(requestBody: requestBody!, auth: auth)
     
     // Send request to server
     let task = URLSession.shared.dataTask(with: req) { (data, resp, error) in
@@ -214,7 +202,7 @@ public func deleteTorrent(torrent: Torrent, erase: Bool, config: TransmissionCon
     url?.path = "/transmission/rpc"
     url?.port = config.port ?? 443
     
-    let torrentBody = TransmissionRemoveRequest(
+    let requestBody = TransmissionRemoveRequest(
         method: "torrent-remove",
         arguments: TransmissionRemoveArgs(
             ids: [torrent.id],
@@ -223,15 +211,7 @@ public func deleteTorrent(torrent: Torrent, erase: Bool, config: TransmissionCon
     )
     
     // Create the request with auth values
-    var req = URLRequest(url: url!.url!)
-    req.httpMethod = "POST"
-    req.httpBody = try? JSONEncoder().encode(torrentBody)
-    req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    req.setValue(lastSessionToken, forHTTPHeaderField: TOKEN_HEAD)
-    let loginString = String(format: "%@:%@", auth.username, auth.password)
-    let loginData = loginString.data(using: String.Encoding.utf8)!
-    let base64LoginString = loginData.base64EncodedString()
-    req.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
+    let req = makeRequest(requestBody: requestBody, auth: auth)
     
     // Send request to server
     let task = URLSession.shared.dataTask(with: req) { (data, resp, error) in
@@ -274,27 +254,28 @@ struct TransmissionSessionResponse: Codable {
     let arguments: TransmissionSessionArguments
 }
 
+/// Get the server's default download directory
+///
+/// ```
+/// getDefaultDownloadDir(config: config, auth: auth, { response in
+///   // Do something with `response`
+/// }
+/// ```
+/// - Parameter config: The server's config
+/// - Parameter auth: The username and password for the server
+/// - Parameter onResponse: An escaping function that receives the response from the server
 public func getDefaultDownloadDir(config: TransmissionConfig, auth: TransmissionAuth, onResponse: @escaping (String) -> Void) {
     url = config
     url?.scheme = "http"
     url?.path = "/transmission/rpc"
     url?.port = config.port ?? 443
     
-    let torrentBody = TransmissionSessionRequest(
+    let requestBody = TransmissionSessionRequest(
         method: "session-get",
-        arguments: ["download-dir"]
+        arguments: []
     )
     
-    // Create the request with auth values
-    var req = URLRequest(url: url!.url!)
-    req.httpMethod = "POST"
-    req.httpBody = try? JSONEncoder().encode(torrentBody)
-    req.setValue("application/json", forHTTPHeaderField: "Content-Type")
-    req.setValue(lastSessionToken, forHTTPHeaderField: TOKEN_HEAD)
-    let loginString = String(format: "%@:%@", auth.username, auth.password)
-    let loginData = loginString.data(using: String.Encoding.utf8)!
-    let base64LoginString = loginData.base64EncodedString()
-    req.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
+    let req = makeRequest(requestBody: requestBody, auth: auth)
     
     let task = URLSession.shared.dataTask(with: req) { (data, resp, error) in
         if error != nil {
@@ -321,17 +302,32 @@ public func getDefaultDownloadDir(config: TransmissionConfig, auth: Transmission
     task.resume()
 }
 
+/// Gets the session-token from the response and sets it as the `lastSessionToken`
 public func authorize(httpResp: HTTPURLResponse?) {
     let mixedHeaders = httpResp?.allHeaderFields as! [String: Any]
     lastSessionToken = mixedHeaders[TOKEN_HEAD] as? String
 }
 
-private func makeRequest(setTorrentBody: TransmissionRequest) -> URLRequest {
+/// Creates a `URLRequest` with provided body and TransmissionAuth
+///
+/// ```
+/// let request = makeRequest(requestBody: body, auth: auth)
+/// ```
+///
+/// - Parameter requestBody: Any struct that conforms to `Codable` to be sent as the request body
+/// - Parameter auth: The authorization values username and password to authorize the request with credentials
+/// - Returns: A `URLRequest` with the provided body and auth values
+private func makeRequest<T: Codable>(requestBody: T, auth: TransmissionAuth) -> URLRequest {
+    // Create the request with auth values
     var req = URLRequest(url: url!.url!)
     req.httpMethod = "POST"
-    req.httpBody = try? JSONEncoder().encode(setTorrentBody)
+    req.httpBody = try? JSONEncoder().encode(requestBody)
     req.setValue("application/json", forHTTPHeaderField: "Content-Type")
     req.setValue(lastSessionToken, forHTTPHeaderField: TOKEN_HEAD)
+    let loginString = String(format: "%@:%@", auth.username, auth.password)
+    let loginData = loginString.data(using: String.Encoding.utf8)!
+    let base64LoginString = loginData.base64EncodedString()
+    req.setValue("Basic \(base64LoginString)", forHTTPHeaderField: "Authorization")
     
     return req
 }
