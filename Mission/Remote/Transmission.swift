@@ -328,8 +328,12 @@ public func playPause(torrent: Torrent, config: TransmissionConfig, auth: Transm
     url?.path = "/transmission/rpc"
     url?.port = config.port ?? 443
     
-    let requestBody = TorrentActionRequest(
+    // If the torrent already has `stopped` status, start it. Otherwise, stop it.
+    let requestBody = torrent.status == TorrentStatus.stopped.rawValue ? TorrentActionRequest(
         method: "torrent-start",
+        arguments: ["ids": [torrent.id]]
+    ) : TorrentActionRequest(
+        method: "torrent-stop",
         arguments: ["ids": [torrent.id]]
     )
     

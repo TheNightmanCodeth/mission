@@ -302,7 +302,7 @@ func updateList(store: Store, host: Host, update: @escaping ([Torrent]) -> Void)
     })
 }
 
-private func makeConfig(store: Store) -> (config: TransmissionConfig, auth: TransmissionAuth) {
+func makeConfig(store: Store) -> (config: TransmissionConfig, auth: TransmissionAuth) {
     // Send the file to the server
     var config = TransmissionConfig()
     config.host = store.host?.server

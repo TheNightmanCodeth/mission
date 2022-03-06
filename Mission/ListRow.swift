@@ -33,7 +33,12 @@ struct ListRow: View {
                     .frame(maxWidth: .infinity, alignment: .topLeading)
             }.padding([.top, .bottom, .leading], 10)
                 .padding(.trailing, 5)
-            Button(action: {}, label: {
+            Button(action: {
+                let info = makeConfig(store: store)
+                playPause(torrent: torrent, config: info.config, auth: info.auth, onResponse: { response in
+                    // TODO: Handle response
+                })
+            }, label: {
                 Image(systemName: torrent.status == TorrentStatus.stopped.rawValue ? "play.circle" : "pause.circle")
             })
                 .buttonStyle(BorderlessButtonStyle())
@@ -41,14 +46,8 @@ struct ListRow: View {
                 .padding(.trailing, 5)
             Menu {
                 Button("Delete", action: {
-                    var config = TransmissionConfig()
-                    config.host = store.host?.server
-                    config.port = Int(store.host!.port)
-                    let keychain = Keychain(service: "me.jdiggity.mission")
-                    let password = keychain[store.host!.name!]
-                    let auth = TransmissionAuth(username: store.host!.username!, password: password!)
-                    
-                    deleteTorrent(torrent: torrent, erase: false, config: config, auth: auth, onDel: { response in
+                    let info = makeConfig(store: store)
+                    deleteTorrent(torrent: torrent, erase: false, config: info.config, auth: info.auth, onDel: { response in
                         // TODO: Handle response
                     })
                 })
