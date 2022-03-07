@@ -30,27 +30,47 @@ struct AddTorrentDialog: View {
                         .padding(.top, 20)
                         .padding(.bottom, 10)
                         .padding(.leading, 20)
+                        .frame(alignment: .trailing)
                 }).buttonStyle(BorderlessButtonStyle())
             }
             
             Text("Add either a magnet link or .torrent file.")
                 .fixedSize(horizontal: true, vertical: true)
-                .frame(maxWidth: 200, alignment: .center)
+                //.frame(maxWidth: 200, alignment: .center)
                 .font(.body)
                 .padding(.leading, 20)
                 .padding(.trailing, 20)
             
-            TextField(
-                "Magnet link",
-                text: $alertInput
-            ).onSubmit {
-                // TODO: Validate entry
-            }.padding()
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Magnet Link")
+                    .font(.system(size: 10))
+                    //.frame(width: 100, alignment: .leading)
+                    .padding(.top, 10)
+                    .padding(.leading)
+                    .padding(.bottom, 5)
+                    
+                TextField(
+                    "Magnet link",
+                    text: $alertInput
+                ).onSubmit {
+                    // TODO: Validate entry
+                }
+                .padding([.leading, .trailing])
+            }
+            .padding(.bottom, 5)
             
-            TextField(
-                "Download directory",
-                text: $downloadDir
-            ).padding()
+            VStack(alignment: .leading, spacing: 0) {
+                Text("Download Destination")
+                    .font(.system(size: 10))
+                    .padding(.top, 10)
+                    .padding(.leading)
+                    .padding(.bottom, 5)
+                TextField(
+                    "Download Destination",
+                    text: $downloadDir
+                )
+                    .padding([.leading, .trailing])
+            }
             
             HStack {
                 Button("Upload file") {
