@@ -84,7 +84,7 @@ struct ContentView: View {
             }
             ToolbarItem(placement: .primaryAction) {
                 Button(action: {
-                    self.isShowingAddAlert.toggle()
+                    store.isShowingAddAlert.toggle()
                 }) {
                     Image(systemName: "plus")
                 }
@@ -95,7 +95,7 @@ struct ContentView: View {
             AddServerDialog(store: store, viewContext: viewContext, hosts: hosts)
         })
         // Add torrent alert
-        .sheet(isPresented: $isShowingAddAlert, onDismiss: {}, content: {
+        .sheet(isPresented: $store.isShowingAddAlert, onDismiss: {}, content: {
             AddTorrentDialog(store: store)
         })
     }

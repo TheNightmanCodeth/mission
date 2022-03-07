@@ -14,7 +14,6 @@ struct AddTorrentDialog: View {
     
     @State var alertInput: String = ""
     @State var downloadDir: String = ""
-    @State var isShowingAddAlert: Bool = false
     
     var body: some View {
         VStack {
@@ -25,7 +24,7 @@ struct AddTorrentDialog: View {
                     .padding(.bottom, 10)
                     .padding(.top, 20)
                 Button(action: {
-                    self.isShowingAddAlert.toggle()
+                    store.isShowingAddAlert.toggle()
                 }, label: {
                     Image(systemName: "xmark.circle.fill")
                         .padding(.top, 20)
@@ -70,7 +69,7 @@ struct AddTorrentDialog: View {
                         
                         addTorrent(fileUrl: fileStream, saveLocation: downloadDir, auth: info.auth, file: true, config: info.config, onAdd: { response in
                             if response == TransmissionResponse.success {
-                                self.isShowingAddAlert.toggle()
+                                store.isShowingAddAlert.toggle()
                             }
                         })
                     }
@@ -82,13 +81,16 @@ struct AddTorrentDialog: View {
                     let info = makeConfig(store: store)
                     addTorrent(fileUrl: alertInput, saveLocation: downloadDir, auth: info.auth, file: false, config: info.config, onAdd: { response in
                         if response == TransmissionResponse.success {
-                            self.isShowingAddAlert.toggle()
+                            store.isShowingAddAlert.toggle()
                         }
                     })
                 }.padding()
             }
             
         }.interactiveDismissDisabled(false)
+            .onAppear {
+                downloadDir = store.defaultDownloadDir
+            }
     }
 }
 
