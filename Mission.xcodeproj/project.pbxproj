@@ -21,6 +21,8 @@
 		D83A42AE27CBEFAB00B558B6 /* MissionStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D83A42AC27CBEFAB00B558B6 /* MissionStore.xcdatamodeld */; };
 		D83A42B127CDE3F700B558B6 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = D83A42B027CDE3F700B558B6 /* KeychainAccess */; };
 		D8F05BB527D28E320067CB10 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = D8F05BB427D28E320067CB10 /* AlertToast */; };
+		D8F05BB927D594D80067CB10 /* AddServerDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F05BB827D594D80067CB10 /* AddServerDialog.swift */; };
+		D8F05BBB27D596560067CB10 /* AddTorrentDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F05BBA27D596560067CB10 /* AddTorrentDialog.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -59,6 +61,8 @@
 		D83A42AA27CBEF7100B558B6 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		D83A42AD27CBEFAB00B558B6 /* MissionStore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MissionStore.xcdatamodel; sourceTree = "<group>"; };
 		D8F05BB627D2AAA80067CB10 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		D8F05BB827D594D80067CB10 /* AddServerDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddServerDialog.swift; sourceTree = "<group>"; };
+		D8F05BBA27D596560067CB10 /* AddTorrentDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTorrentDialog.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -112,6 +116,7 @@
 		D8217BF327C82C7D009ABA7C /* Mission */ = {
 			isa = PBXGroup;
 			children = (
+				D8F05BB727D594CB0067CB10 /* Views */,
 				D83A42AC27CBEFAB00B558B6 /* MissionStore.xcdatamodeld */,
 				D83A426427C99F6000B558B6 /* Info.plist */,
 				D8217C2227C82E8C009ABA7C /* Remote */,
@@ -158,6 +163,15 @@
 				D8217C2327C82EDD009ABA7C /* Transmission.swift */,
 			);
 			path = Remote;
+			sourceTree = "<group>";
+		};
+		D8F05BB727D594CB0067CB10 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				D8F05BB827D594D80067CB10 /* AddServerDialog.swift */,
+				D8F05BBA27D596560067CB10 /* AddTorrentDialog.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -298,9 +312,11 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8F05BB927D594D80067CB10 /* AddServerDialog.swift in Sources */,
 				D8217C2427C82EDD009ABA7C /* Transmission.swift in Sources */,
 				D81D47D827D1B6A50050C0B3 /* ListRow.swift in Sources */,
 				D83A42AE27CBEFAB00B558B6 /* MissionStore.xcdatamodeld in Sources */,
+				D8F05BBB27D596560067CB10 /* AddTorrentDialog.swift in Sources */,
 				D8217BF727C82C7D009ABA7C /* ContentView.swift in Sources */,
 				D81D47D627D1B58A0050C0B3 /* Store.swift in Sources */,
 				D8217BF527C82C7D009ABA7C /* MissionApp.swift in Sources */,
