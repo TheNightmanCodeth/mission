@@ -51,9 +51,9 @@ struct ListRow: View {
                         // TODO: Handle response
                     })
                 })
-                Button("Download", action: {
+                // Button("Download", action: {
                     // TODO: Download the destination folder using sftp library
-                })
+                // })
             } label: {
                 
             }

@@ -23,6 +23,7 @@
 		D8F05BB527D28E320067CB10 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = D8F05BB427D28E320067CB10 /* AlertToast */; };
 		D8F05BB927D594D80067CB10 /* AddServerDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F05BB827D594D80067CB10 /* AddServerDialog.swift */; };
 		D8F05BBB27D596560067CB10 /* AddTorrentDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F05BBA27D596560067CB10 /* AddTorrentDialog.swift */; };
+		D8F05BBD27D5A4920067CB10 /* FileAccess.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F05BBC27D5A4920067CB10 /* FileAccess.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -63,6 +64,7 @@
 		D8F05BB627D2AAA80067CB10 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		D8F05BB827D594D80067CB10 /* AddServerDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddServerDialog.swift; sourceTree = "<group>"; };
 		D8F05BBA27D596560067CB10 /* AddTorrentDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddTorrentDialog.swift; sourceTree = "<group>"; };
+		D8F05BBC27D5A4920067CB10 /* FileAccess.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileAccess.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -161,6 +163,7 @@
 			isa = PBXGroup;
 			children = (
 				D8217C2327C82EDD009ABA7C /* Transmission.swift */,
+				D8F05BBC27D5A4920067CB10 /* FileAccess.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -321,6 +324,7 @@
 				D81D47D627D1B58A0050C0B3 /* Store.swift in Sources */,
 				D8217BF527C82C7D009ABA7C /* MissionApp.swift in Sources */,
 				D83A42AB27CBEF7100B558B6 /* Persistence.swift in Sources */,
+				D8F05BBD27D5A4920067CB10 /* FileAccess.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

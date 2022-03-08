@@ -30,6 +30,7 @@ struct ContentView: View {
         List(store.torrents, id: \.self) { torrent in
             ListRow(torrent: binding(for: torrent), store: store)
         }
+        .frame(minWidth: 500, idealWidth: 500, minHeight: 600, idealHeight: 600)
         .toast(isPresenting: $store.isShowingLoading) {
             AlertToast(type: .loading)
         }
