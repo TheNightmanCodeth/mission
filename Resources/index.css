@@ -1,0 +1,14 @@
+.circle {
+    height: 650px;
+    width: 650px;
+    background-color: #F2F190;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.spotlight {
+    height: 1000px;
+    width: 100%;
+    background-color: cadetblue;
+    display: inline-block;
+}
