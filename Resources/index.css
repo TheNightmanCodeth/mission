@@ -8,7 +8,7 @@
 
 .spotlight {
     height: 1000px;
-    width: 100%;
+    width: 100vw;
     background-color: cadetblue;
     display: inline-block;
 }
