@@ -1,5 +1,3 @@
-
-
 .circle {
     height: 650px;
     width: 650px;
@@ -12,5 +10,4 @@
     height: 1000px;
     width: 100vw;
     background-color: cadetblue;
-    display: inline-block;
 }
