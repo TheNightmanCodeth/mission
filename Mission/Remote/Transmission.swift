@@ -24,6 +24,12 @@ public enum TorrentStatus: Int {
     case seeding = 6
 }
 
+public enum TorrentPriority: String {
+    case high = "priority-high"
+    case normal = "priority-normal"
+    case low = "priority-low"
+}
+
 /// The remove body is weird and the delete-local-data argument has hyphens in it
 /// so we need **another** dictionary with `CodingKeys` to make it work
 struct TransmissionRemoveArgs: Codable {
@@ -362,6 +368,11 @@ public func playPause(torrent: Torrent, config: TransmissionConfig, auth: Transm
     task.resume()
 }
 
+/// Play/Pause all active transfers
+///
+/// - Parameter start: True if we are starting all transfers, false if we are stopping them
+/// - Parameter info: An info struct generated from makeConfig
+/// - Parameter onResponse: Called when the request is complete
 public func playPauseAll(start: Bool, info: (config: TransmissionConfig, auth: TransmissionAuth), onResponse: @escaping (TransmissionResponse) -> Void) {
     url = info.config
     url?.scheme = "http"
@@ -397,6 +408,50 @@ public func playPauseAll(start: Bool, info: (config: TransmissionConfig, auth: T
             return onResponse(TransmissionResponse.success)
         default:
             return onResponse(TransmissionResponse.failed)
+        }
+    }
+    task.resume()
+}
+
+/// Set a transfers priority
+///
+/// - Parameter torrent: The torrent whose priority we are setting
+/// - Parameter priority: One of: `TorrentPriority.high/normal/low`
+/// - Parameter onComplete: Called when the servers' response is received with a `TransmissionResponse`
+public func setPriority(torrent: Torrent, priority: TorrentPriority, info: (config: TransmissionConfig, auth: TransmissionAuth), onComplete: @escaping (TransmissionResponse) -> Void) {
+    url = info.config
+    url?.scheme = "http"
+    url?.path = "/transmission/rpc"
+    url?.port = info.config.port ?? 443
+    
+    let requestBody = TorrentActionRequest(
+        method: "torrent-set",
+        arguments: [
+            "ids": [torrent.id],
+            priority.rawValue: []
+        ]
+    )
+    
+    let req = makeRequest(requestBody: requestBody, auth: info.auth)
+    
+    let task = URLSession.shared.dataTask(with: req) { (data, resp, err) in
+        if err != nil {
+            onComplete(TransmissionResponse.configError)
+        }
+        
+        let httpResp = resp as? HTTPURLResponse
+        // Call `onAdd` with the status code
+        switch httpResp?.statusCode {
+        case 409?: // If we get a 409, save the token and try again
+            authorize(httpResp: httpResp)
+            setPriority(torrent: torrent, priority: priority, info: info, onComplete: onComplete)
+            return
+        case 401?:
+            return onComplete(TransmissionResponse.forbidden)
+        case 200?:
+            return onComplete(TransmissionResponse.success)
+        default:
+            return onComplete(TransmissionResponse.failed)
         }
     }
     task.resume()

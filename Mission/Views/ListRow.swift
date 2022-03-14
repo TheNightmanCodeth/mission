@@ -45,6 +45,19 @@ struct ListRow: View {
                 .frame(width: 10, height: 10, alignment: .center)
                 .padding(.trailing, 5)
             Menu {
+                Menu {
+                    Button("High") {
+                        setPriority(torrent: torrent, priority: TorrentPriority.high, info: makeConfig(store: store), onComplete: { r in })
+                    }
+                    Button("Normal") {
+                        setPriority(torrent: torrent, priority: TorrentPriority.normal, info: makeConfig(store: store), onComplete: { r in })
+                    }
+                    Button("Low") {
+                        setPriority(torrent: torrent, priority: TorrentPriority.low, info: makeConfig(store: store), onComplete: { r in })
+                    }
+                } label: {
+                    Text("Set priority")
+                }
                 Button("Delete", action: {
                     let info = makeConfig(store: store)
                     deleteTorrent(torrent: torrent, erase: false, config: info.config, auth: info.auth, onDel: { response in
