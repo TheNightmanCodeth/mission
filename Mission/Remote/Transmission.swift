@@ -362,6 +362,46 @@ public func playPause(torrent: Torrent, config: TransmissionConfig, auth: Transm
     task.resume()
 }
 
+public func playPauseAll(start: Bool, info: (config: TransmissionConfig, auth: TransmissionAuth), onResponse: @escaping (TransmissionResponse) -> Void) {
+    url = info.config
+    url?.scheme = "http"
+    url?.path = "/transmission/rpc"
+    url?.port = info.config.port ?? 443
+    
+    // If the torrent already has `stopped` status, start it. Otherwise, stop it.
+    let requestBody = start ? TransmissionRequest(
+        method: "torrent-start",
+        arguments: [:]
+    ) : TransmissionRequest(
+        method: "torrent-stop",
+        arguments: [:]
+    )
+    
+    let req = makeRequest(requestBody: requestBody, auth: info.auth)
+    
+    let task = URLSession.shared.dataTask(with: req) { (data, resp, err) in
+        if err != nil {
+            onResponse(TransmissionResponse.configError)
+        }
+        
+        let httpResp = resp as? HTTPURLResponse
+        // Call `onAdd` with the status code
+        switch httpResp?.statusCode {
+        case 409?: // If we get a 409, save the token and try again
+            authorize(httpResp: httpResp)
+            playPauseAll(start: start, info: info, onResponse: onResponse)
+            return
+        case 401?:
+            return onResponse(TransmissionResponse.forbidden)
+        case 200?:
+            return onResponse(TransmissionResponse.success)
+        default:
+            return onResponse(TransmissionResponse.failed)
+        }
+    }
+    task.resume()
+}
+
 /// Gets the session-token from the response and sets it as the `lastSessionToken`
 public func authorize(httpResp: HTTPURLResponse?) {
     let mixedHeaders = httpResp?.allHeaderFields as! [String: Any]

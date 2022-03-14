@@ -66,6 +66,26 @@ struct ContentView: View {
         .toolbar {
             ToolbarItem(placement: .status) {
                 Menu {
+                    Button(action: {
+                        playPauseAll(start: false, info: makeConfig(store: store), onResponse: { response in
+                            updateList(store: store, update: {_ in})
+                        })
+                    }) {
+                        Text("Pause all")
+                    }
+                    Button(action: {
+                        playPauseAll(start: true, info: makeConfig(store: store), onResponse: { response in
+                            updateList(store: store, update: {_ in})
+                        })
+                    }) {
+                        Text("Resume all")
+                    }
+                } label: {
+                    Image(systemName: "playpause")
+                }
+            }
+            ToolbarItem(placement: .status) {
+                Menu {
                     ForEach(hosts, id: \.self) { host in
                         Button(action: {
                             store.setHost(host: host)
