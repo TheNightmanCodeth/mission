@@ -135,7 +135,6 @@
 				D8217BFA27C82C7E009ABA7C /* Preview Content */,
 				D83A42AA27CBEF7100B558B6 /* Persistence.swift */,
 				D81D47D527D1B58A0050C0B3 /* Store.swift */,
-				D81D47D727D1B6A50050C0B3 /* ListRow.swift */,
 				D8E3977627DFA649009713C0 /* GoogleService-Info.plist */,
 			);
 			path = Mission;
@@ -178,6 +177,7 @@
 		D8F05BB727D594CB0067CB10 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				D81D47D727D1B6A50050C0B3 /* ListRow.swift */,
 				D8F05BB827D594D80067CB10 /* AddServerDialog.swift */,
 				D8F05BBA27D596560067CB10 /* AddTorrentDialog.swift */,
 			);
