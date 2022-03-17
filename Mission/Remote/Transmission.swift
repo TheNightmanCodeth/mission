@@ -198,6 +198,65 @@ public func addTorrent(fileUrl: String, saveLocation: String, auth: Transmission
     task.resume()
 }
 
+struct TorrentFilesArgs: Codable {
+    var fields: [String]
+    var ids: [Int]
+}
+
+struct TorrentFilesRequest: Codable {
+    var method: String
+    var arguments: TorrentFilesArgs
+}
+
+struct TorrentFilesResponse: Codable {
+    let arguments: [String: [File]]
+}
+
+public struct File: Codable {
+    var bytesCompleted: Int
+    var wanted: Int
+    var name: String
+}
+
+public func getTransferFiles(torrent: Torrent, info: (config: TransmissionConfig, auth: TransmissionAuth), onReceived: @escaping ([File])->(Void)) {
+    url = info.config
+    url?.scheme = "http"
+    url?.path = "/transmission/rpc"
+    url?.port = info.config.port ?? 443
+    
+    let request = TorrentFilesRequest(
+        method: "torrent-get",
+        arguments: TorrentFilesArgs(
+            fields: ["files"],
+            ids: [torrent.id]
+        )
+    )
+    
+    let req = makeRequest(requestBody: request, auth: info.auth)
+    
+    // Send the request
+    let task = URLSession.shared.dataTask(with: req) { (data, resp, error) in
+        if error != nil {
+            return onReceived([])
+        }
+        let httpResp = resp as? HTTPURLResponse
+        switch httpResp?.statusCode {
+        case 409?: // If we get a 409, save the session token and try again
+            authorize(httpResp: httpResp)
+            getTransferFiles(torrent: torrent, info: info, onReceived: onReceived)
+            return
+        case 200?:
+            let response = try? JSONDecoder().decode(TorrentFilesResponse.self, from: data!)
+            let torrents = response?.arguments["files"]
+            
+            return onReceived(torrents!)
+        default:
+            return
+        }
+    }
+    task.resume()
+}
+
 /// Deletes a torrent from the queue
 ///
 /// ```
