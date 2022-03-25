@@ -233,11 +233,10 @@ struct TorrentFilesResponse: Codable {
     let arguments: TorrentFilesResponseTorrents
 }
 
-public struct File: Codable, Identifiable {
+public struct File: Codable {
     var bytesCompleted: Int
     var length: Int
     var name: String
-    public let id = UUID()
 }
 
 public func getTransferFiles(transferId: Int, info: (config: TransmissionConfig, auth: TransmissionAuth), onReceived: @escaping ([File])->(Void)) {
