@@ -20,8 +20,7 @@
 		D83A42AB27CBEF7100B558B6 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83A42AA27CBEF7100B558B6 /* Persistence.swift */; };
 		D83A42AE27CBEFAB00B558B6 /* MissionStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D83A42AC27CBEFAB00B558B6 /* MissionStore.xcdatamodeld */; };
 		D83A42B127CDE3F700B558B6 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = D83A42B027CDE3F700B558B6 /* KeychainAccess */; };
-		D8D3D7CF27DFB6E700BBE755 /* FirebaseAnalyticsSwift-Beta in Frameworks */ = {isa = PBXBuildFile; productRef = D8D3D7CE27DFB6E700BBE755 /* FirebaseAnalyticsSwift-Beta */; };
-		D8D3D7D127DFB6E700BBE755 /* FirebaseCrashlytics in Frameworks */ = {isa = PBXBuildFile; productRef = D8D3D7D027DFB6E700BBE755 /* FirebaseCrashlytics */; };
+		D8D3D7D427E2C74400BBE755 /* FileSelectDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D3D7D327E2C74400BBE755 /* FileSelectDialog.swift */; };
 		D8E3977727DFA649009713C0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D8E3977627DFA649009713C0 /* GoogleService-Info.plist */; };
 		D8F05BB527D28E320067CB10 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = D8F05BB427D28E320067CB10 /* AlertToast */; };
 		D8F05BB927D594D80067CB10 /* AddServerDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F05BB827D594D80067CB10 /* AddServerDialog.swift */; };
@@ -64,6 +63,7 @@
 		D83A426427C99F6000B558B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		D83A42AA27CBEF7100B558B6 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		D83A42AD27CBEFAB00B558B6 /* MissionStore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MissionStore.xcdatamodel; sourceTree = "<group>"; };
+		D8D3D7D327E2C74400BBE755 /* FileSelectDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSelectDialog.swift; sourceTree = "<group>"; };
 		D8E3977627DFA649009713C0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D8F05BB627D2AAA80067CB10 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		D8F05BB827D594D80067CB10 /* AddServerDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddServerDialog.swift; sourceTree = "<group>"; };
@@ -76,8 +76,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D8D3D7CF27DFB6E700BBE755 /* FirebaseAnalyticsSwift-Beta in Frameworks */,
-				D8D3D7D127DFB6E700BBE755 /* FirebaseCrashlytics in Frameworks */,
 				D83A42B127CDE3F700B558B6 /* KeychainAccess in Frameworks */,
 				D8F05BB527D28E320067CB10 /* AlertToast in Frameworks */,
 			);
@@ -180,6 +178,7 @@
 				D81D47D727D1B6A50050C0B3 /* ListRow.swift */,
 				D8F05BB827D594D80067CB10 /* AddServerDialog.swift */,
 				D8F05BBA27D596560067CB10 /* AddTorrentDialog.swift */,
+				D8D3D7D327E2C74400BBE755 /* FileSelectDialog.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -204,8 +203,6 @@
 			packageProductDependencies = (
 				D83A42B027CDE3F700B558B6 /* KeychainAccess */,
 				D8F05BB427D28E320067CB10 /* AlertToast */,
-				D8D3D7CE27DFB6E700BBE755 /* FirebaseAnalyticsSwift-Beta */,
-				D8D3D7D027DFB6E700BBE755 /* FirebaseCrashlytics */,
 			);
 			productName = Mission;
 			productReference = D8217BF127C82C7D009ABA7C /* Mission.app */;
@@ -282,7 +279,6 @@
 			packageReferences = (
 				D83A42AF27CDE3F700B558B6 /* XCRemoteSwiftPackageReference "KeychainAccess" */,
 				D8F05BB327D28E320067CB10 /* XCRemoteSwiftPackageReference "AlertToast" */,
-				D8D3D7CD27DFB6E700BBE755 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */,
 			);
 			productRefGroup = D8217BF227C82C7D009ABA7C /* Products */;
 			projectDirPath = "";
@@ -353,6 +349,7 @@
 				D8217C2427C82EDD009ABA7C /* Transmission.swift in Sources */,
 				D81D47D827D1B6A50050C0B3 /* ListRow.swift in Sources */,
 				D83A42AE27CBEFAB00B558B6 /* MissionStore.xcdatamodeld in Sources */,
+				D8D3D7D427E2C74400BBE755 /* FileSelectDialog.swift in Sources */,
 				D8F05BBB27D596560067CB10 /* AddTorrentDialog.swift in Sources */,
 				D8217BF727C82C7D009ABA7C /* ContentView.swift in Sources */,
 				D81D47D627D1B58A0050C0B3 /* Store.swift in Sources */,
@@ -693,14 +690,6 @@
 				kind = branch;
 			};
 		};
-		D8D3D7CD27DFB6E700BBE755 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */ = {
-			isa = XCRemoteSwiftPackageReference;
-			repositoryURL = "https://github.com/firebase/firebase-ios-sdk";
-			requirement = {
-				kind = upToNextMajorVersion;
-				minimumVersion = 8.0.0;
-			};
-		};
 		D8F05BB327D28E320067CB10 /* XCRemoteSwiftPackageReference "AlertToast" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/elai950/AlertToast.git";
@@ -716,16 +705,6 @@
 			isa = XCSwiftPackageProductDependency;
 			package = D83A42AF27CDE3F700B558B6 /* XCRemoteSwiftPackageReference "KeychainAccess" */;
 			productName = KeychainAccess;
-		};
-		D8D3D7CE27DFB6E700BBE755 /* FirebaseAnalyticsSwift-Beta */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D8D3D7CD27DFB6E700BBE755 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = "FirebaseAnalyticsSwift-Beta";
-		};
-		D8D3D7D027DFB6E700BBE755 /* FirebaseCrashlytics */ = {
-			isa = XCSwiftPackageProductDependency;
-			package = D8D3D7CD27DFB6E700BBE755 /* XCRemoteSwiftPackageReference "firebase-ios-sdk" */;
-			productName = FirebaseCrashlytics;
 		};
 		D8F05BB427D28E320067CB10 /* AlertToast */ = {
 			isa = XCSwiftPackageProductDependency;

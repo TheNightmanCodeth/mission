@@ -7,15 +7,10 @@
 
 import SwiftUI
 import Combine
-import Firebase
 
 @main
 struct MissionApp: App {
     let persistenceController = PersistenceController.shared
-    
-    init() {
-        FirebaseApp.configure()
-    }
     
     var body: some Scene {
         WindowGroup {
