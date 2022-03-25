@@ -88,8 +88,9 @@ struct AddTorrentDialog: View {
                         let info = makeConfig(store: store)
                         
                         addTorrent(fileUrl: fileStream, saveLocation: downloadDir, auth: info.auth, file: true, config: info.config, onAdd: { response in
-                            if response == TransmissionResponse.success {
+                            if response.response == TransmissionResponse.success {
                                 store.isShowingAddAlert.toggle()
+                                showFilePicker(transferId: response.transferId, info: info)
                             }
                         })
                     }
@@ -100,8 +101,9 @@ struct AddTorrentDialog: View {
                     // Send the magnet link to the server
                     let info = makeConfig(store: store)
                     addTorrent(fileUrl: alertInput, saveLocation: downloadDir, auth: info.auth, file: false, config: info.config, onAdd: { response in
-                        if response == TransmissionResponse.success {
+                        if response.response == TransmissionResponse.success {
                             store.isShowingAddAlert.toggle()
+                            showFilePicker(transferId: response.transferId, info: info)
                         }
                     })
                 }.padding()
@@ -111,6 +113,14 @@ struct AddTorrentDialog: View {
             .onAppear {
                 downloadDir = store.defaultDownloadDir
             }
+    }
+    
+    func showFilePicker(transferId: Int, info: (config: TransmissionConfig, auth: TransmissionAuth)) {
+        getTransferFiles(transferId: transferId, info: info, onReceived: { f in
+            store.addTransferFilesList = f
+            store.transferToSetFiles = transferId
+            store.isShowingTransferFiles.toggle()
+        })
     }
 }
 

@@ -138,6 +138,16 @@ public func getTorrents(config: TransmissionConfig, auth: TransmissionAuth, onRe
     task.resume()
 }
 
+struct TorrentAdded: Codable {
+    var hashString: String
+    var id: Int
+    var name: String
+}
+
+struct TorrentAddResponse: Codable {
+    var arguments: [String: TorrentAdded]
+}
+
 /// Makes a request to the server containing either a base64 representation of a .torrent file or a magnet link
 ///
 /// ```
@@ -150,7 +160,7 @@ public func getTorrents(config: TransmissionConfig, auth: TransmissionAuth, onRe
 /// - Parameter file: A boolean value; true if `fileUrl` is a base64 encoded file and false if `fileUrl` is a magnet link
 /// - Parameter config: A `TransmissionConfig` containing the server's address and port
 /// - Parameter onAdd: An escaping function that receives the servers response code represented as a `TransmissionResponse`
-public func addTorrent(fileUrl: String, saveLocation: String, auth: TransmissionAuth, file: Bool, config: TransmissionConfig, onAdd: @escaping (TransmissionResponse) -> Void) -> Void {
+public func addTorrent(fileUrl: String, saveLocation: String, auth: TransmissionAuth, file: Bool, config: TransmissionConfig, onAdd: @escaping ((response: TransmissionResponse, transferId: Int)) -> Void) -> Void {
     url = config
     url?.scheme = "http"
     url?.path = "/transmission/rpc"
@@ -177,7 +187,7 @@ public func addTorrent(fileUrl: String, saveLocation: String, auth: Transmission
     // Send request to server
     let task = URLSession.shared.dataTask(with: req) { (data, resp, error) in
         if error != nil {
-            return onAdd(TransmissionResponse.configError)
+            return onAdd((TransmissionResponse.configError, 0))
         }
         
         let httpResp = resp as? HTTPURLResponse
@@ -188,11 +198,14 @@ public func addTorrent(fileUrl: String, saveLocation: String, auth: Transmission
             addTorrent(fileUrl: fileUrl, saveLocation: saveLocation, auth: auth, file: file, config: config, onAdd: onAdd)
             return
         case 401?:
-            return onAdd(TransmissionResponse.forbidden)
+            return onAdd((TransmissionResponse.forbidden, 0))
         case 200?:
-            return onAdd(TransmissionResponse.success)
+            let response = try? JSONDecoder().decode(TorrentAddResponse.self, from: data!)
+            let transferId: Int = response!.arguments["torrent-added"]!.id
+            
+            return onAdd((TransmissionResponse.success, transferId))
         default:
-            return onAdd(TransmissionResponse.failed)
+            return onAdd((TransmissionResponse.failed, 0))
         }
     }
     task.resume()
@@ -208,17 +221,26 @@ struct TorrentFilesRequest: Codable {
     var arguments: TorrentFilesArgs
 }
 
+struct TorrentFilesResponseFiles: Codable {
+    let files: [File]
+}
+
+struct TorrentFilesResponseTorrents: Codable {
+    let torrents: [TorrentFilesResponseFiles]
+}
+
 struct TorrentFilesResponse: Codable {
-    let arguments: [String: [File]]
+    let arguments: TorrentFilesResponseTorrents
 }
 
-public struct File: Codable {
+public struct File: Codable, Identifiable {
     var bytesCompleted: Int
-    var wanted: Int
+    var length: Int
     var name: String
+    public let id = UUID()
 }
 
-public func getTransferFiles(torrent: Torrent, info: (config: TransmissionConfig, auth: TransmissionAuth), onReceived: @escaping ([File])->(Void)) {
+public func getTransferFiles(transferId: Int, info: (config: TransmissionConfig, auth: TransmissionAuth), onReceived: @escaping ([File])->(Void)) {
     url = info.config
     url?.scheme = "http"
     url?.path = "/transmission/rpc"
@@ -228,7 +250,7 @@ public func getTransferFiles(torrent: Torrent, info: (config: TransmissionConfig
         method: "torrent-get",
         arguments: TorrentFilesArgs(
             fields: ["files"],
-            ids: [torrent.id]
+            ids: [transferId]
         )
     )
     
@@ -243,11 +265,12 @@ public func getTransferFiles(torrent: Torrent, info: (config: TransmissionConfig
         switch httpResp?.statusCode {
         case 409?: // If we get a 409, save the session token and try again
             authorize(httpResp: httpResp)
-            getTransferFiles(torrent: torrent, info: info, onReceived: onReceived)
+            getTransferFiles(transferId: transferId, info: info, onReceived: onReceived)
             return
         case 200?:
+            print(String(decoding: data!, as: UTF8.self))
             let response = try? JSONDecoder().decode(TorrentFilesResponse.self, from: data!)
-            let torrents = response?.arguments["files"]
+            let torrents = response?.arguments.torrents[0].files
             
             return onReceived(torrents!)
         default:
@@ -504,6 +527,46 @@ public func setPriority(torrent: Torrent, priority: TorrentPriority, info: (conf
         case 409?: // If we get a 409, save the token and try again
             authorize(httpResp: httpResp)
             setPriority(torrent: torrent, priority: priority, info: info, onComplete: onComplete)
+            return
+        case 401?:
+            return onComplete(TransmissionResponse.forbidden)
+        case 200?:
+            return onComplete(TransmissionResponse.success)
+        default:
+            return onComplete(TransmissionResponse.failed)
+        }
+    }
+    task.resume()
+}
+
+/// Tells transmission to olny download the selected files
+public func setTransferFiles(transferId: Int, files: [Int], info: (config: TransmissionConfig, auth: TransmissionAuth), onComplete: @escaping (TransmissionResponse) -> Void) {
+    url = info.config
+    url?.scheme = "http"
+    url?.path = "/transmission/rpc"
+    url?.port = info.config.port ?? 443
+    
+    let requestBody = TorrentActionRequest(
+        method: "torrent-set",
+        arguments: [
+            "ids": [transferId],
+            "files-unwanted": files
+        ]
+    )
+    
+    let req = makeRequest(requestBody: requestBody, auth: info.auth)
+    
+    let task = URLSession.shared.dataTask(with: req) { (data, resp, err) in
+        if err != nil {
+            onComplete(TransmissionResponse.configError)
+        }
+        
+        let httpResp = resp as? HTTPURLResponse
+        // Call `onAdd` with the status code
+        switch httpResp?.statusCode {
+        case 409?: // If we get a 409, save the token and try again
+            authorize(httpResp: httpResp)
+            setTransferFiles(transferId: transferId, files: files, info: info, onComplete: onComplete)
             return
         case 401?:
             return onComplete(TransmissionResponse.forbidden)

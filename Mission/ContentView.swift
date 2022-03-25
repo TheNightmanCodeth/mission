@@ -20,8 +20,6 @@ struct ContentView: View {
     @ObservedObject var store: Store = Store()
     private var keychain = Keychain(service: "me.jdiggity.mission")
     
-    @State private var isShowingAddAlert = false
-    
     @State private var alertInput = ""
     @State private var filename  = ""
     @State private var downloadDir = ""
@@ -118,6 +116,11 @@ struct ContentView: View {
         // Add torrent alert
         .sheet(isPresented: $store.isShowingAddAlert, onDismiss: {}, content: {
             AddTorrentDialog(store: store)
+        })
+        // Add transfer file picker
+        .sheet(isPresented: $store.isShowingTransferFiles, onDismiss: {}, content: {
+            FileSelectDialog(store: store)
+                .frame(width: 400, height: 500)
         })
     }
     
