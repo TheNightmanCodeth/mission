@@ -110,17 +110,22 @@ struct ContentView: View {
             }
         }
         // Add server sheet
-        .sheet(isPresented: $store.setup, onDismiss: {}, content: {
+        .sheet(isPresented: $store.setup, content: {
             AddServerDialog(store: store, viewContext: viewContext, hosts: hosts)
         })
         // Add torrent alert
-        .sheet(isPresented: $store.isShowingAddAlert, onDismiss: {}, content: {
+        .sheet(isPresented: $store.isShowingAddAlert, content: {
             AddTorrentDialog(store: store)
         })
         // Add transfer file picker
-        .sheet(isPresented: $store.isShowingTransferFiles, onDismiss: {}, content: {
+        .sheet(isPresented: $store.isShowingTransferFiles, content: {
             FileSelectDialog(store: store)
                 .frame(width: 400, height: 500)
+        })
+        // Show an error message if we encounter an error
+        .sheet(isPresented: $store.isError, content: {
+            ErrorDialog(store: store)
+                .frame(width: 400, height: 400)
         })
     }
     
@@ -133,12 +138,30 @@ struct ContentView: View {
 }
 
 /// Updates the list of torrents when called
-func updateList(store: Store, update: @escaping ([Torrent]) -> Void) {
+func updateList(store: Store, update: @escaping ([Torrent]) -> Void, retry: Int = 0) {
     let info = makeConfig(store: store)
-    getTorrents(config: info.config, auth: info.auth, onReceived: { torrents in
-        update(torrents!)
-        DispatchQueue.main.async {
-            store.isShowingLoading = false
+    getTorrents(config: info.config, auth: info.auth, onReceived: { torrents, err in
+        if (err != nil) {
+            print("Showing error...")
+            DispatchQueue.main.async {
+                store.isError.toggle()
+                store.debugBrief = "The server gave us this response:"
+                store.debugMessage = err!
+                store.timer.invalidate()
+            }
+        } else if (torrents == nil) {
+            if (retry > 3) {
+                print("Showing error...")
+                store.isError.toggle()
+                store.debugBrief = "Couldn't reach server."
+                store.debugMessage = "We asked the server a few times for a response, \nbut it never got back to us 😔"
+            }
+            updateList(store: store, update: update, retry: retry + 1)
+        } else {
+            update(torrents!)
+            DispatchQueue.main.async {
+                store.isShowingLoading = false
+            }
         }
     })
 }

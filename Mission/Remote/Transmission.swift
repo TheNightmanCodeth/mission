@@ -99,7 +99,7 @@ public enum TransmissionResponse {
 /// - Parameter config: A `TransmissionConfig` with the servers address and port
 /// - Parameter auth: A `TransmissionAuth` with authorization parameters ie. username and password
 /// - Parameter onReceived: An escaping function that receives a list of `Torrent`s
-public func getTorrents(config: TransmissionConfig, auth: TransmissionAuth, onReceived: @escaping ([Torrent]?) -> Void) -> Void {
+public func getTorrents(config: TransmissionConfig, auth: TransmissionAuth, onReceived: @escaping ([Torrent]?, String?) -> Void) -> Void {
     url = config
     url?.scheme = "http"
     url?.path = "/transmission/rpc"
@@ -118,7 +118,7 @@ public func getTorrents(config: TransmissionConfig, auth: TransmissionAuth, onRe
     // Send the request
     let task = URLSession.shared.dataTask(with: req) { (data, resp, error) in
         if error != nil {
-            return onReceived(nil)
+            return onReceived(nil, error.debugDescription)
         }
         let httpResp = resp as? HTTPURLResponse
         switch httpResp?.statusCode {
@@ -130,9 +130,9 @@ public func getTorrents(config: TransmissionConfig, auth: TransmissionAuth, onRe
             let response = try? JSONDecoder().decode(TransmissionListResponse.self, from: data!)
             let torrents = response?.arguments["torrents"]
             
-            return onReceived(torrents)
+            return onReceived(torrents, nil)
         default:
-            return
+            return onReceived(nil, String(decoding: data!, as: UTF8.self))
         }
     }
     task.resume()

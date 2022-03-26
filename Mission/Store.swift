@@ -27,6 +27,10 @@ class Store: NSObject, ObservableObject {
     @Published var isShowingTransferFiles: Bool = false
     @Published var transferToSetFiles: Int = 0
     
+    @Published var isError: Bool = false
+    @Published var debugBrief: String = ""
+    @Published var debugMessage: String = ""
+    
     @Published var addTransferFilesList: [File] = []
     
     var timer: Timer = Timer()

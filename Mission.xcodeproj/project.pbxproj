@@ -21,6 +21,7 @@
 		D83A42AE27CBEFAB00B558B6 /* MissionStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D83A42AC27CBEFAB00B558B6 /* MissionStore.xcdatamodeld */; };
 		D83A42B127CDE3F700B558B6 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = D83A42B027CDE3F700B558B6 /* KeychainAccess */; };
 		D8D3D7D427E2C74400BBE755 /* FileSelectDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D3D7D327E2C74400BBE755 /* FileSelectDialog.swift */; };
+		D8D50C6427EE7AA10074B17C /* ErrorDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D50C6327EE7AA10074B17C /* ErrorDialog.swift */; };
 		D8E3977727DFA649009713C0 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = D8E3977627DFA649009713C0 /* GoogleService-Info.plist */; };
 		D8F05BB527D28E320067CB10 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = D8F05BB427D28E320067CB10 /* AlertToast */; };
 		D8F05BB927D594D80067CB10 /* AddServerDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F05BB827D594D80067CB10 /* AddServerDialog.swift */; };
@@ -64,6 +65,7 @@
 		D83A42AA27CBEF7100B558B6 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		D83A42AD27CBEFAB00B558B6 /* MissionStore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MissionStore.xcdatamodel; sourceTree = "<group>"; };
 		D8D3D7D327E2C74400BBE755 /* FileSelectDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSelectDialog.swift; sourceTree = "<group>"; };
+		D8D50C6327EE7AA10074B17C /* ErrorDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorDialog.swift; sourceTree = "<group>"; };
 		D8E3977627DFA649009713C0 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		D8F05BB627D2AAA80067CB10 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		D8F05BB827D594D80067CB10 /* AddServerDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddServerDialog.swift; sourceTree = "<group>"; };
@@ -179,6 +181,7 @@
 				D8F05BB827D594D80067CB10 /* AddServerDialog.swift */,
 				D8F05BBA27D596560067CB10 /* AddTorrentDialog.swift */,
 				D8D3D7D327E2C74400BBE755 /* FileSelectDialog.swift */,
+				D8D50C6327EE7AA10074B17C /* ErrorDialog.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -347,6 +350,7 @@
 			files = (
 				D8F05BB927D594D80067CB10 /* AddServerDialog.swift in Sources */,
 				D8217C2427C82EDD009ABA7C /* Transmission.swift in Sources */,
+				D8D50C6427EE7AA10074B17C /* ErrorDialog.swift in Sources */,
 				D81D47D827D1B6A50050C0B3 /* ListRow.swift in Sources */,
 				D83A42AE27CBEFAB00B558B6 /* MissionStore.xcdatamodeld in Sources */,
 				D8D3D7D427E2C74400BBE755 /* FileSelectDialog.swift in Sources */,
@@ -516,7 +520,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 6;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mission/Preview Content\"";
 				DEVELOPMENT_TEAM = D44Y5BBJ48;
@@ -530,7 +534,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jdiggity.Mission;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -547,7 +551,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 1;
+				CURRENT_PROJECT_VERSION = 6;
 				DEVELOPMENT_ASSET_PATHS = "\"Mission/Preview Content\"";
 				DEVELOPMENT_TEAM = D44Y5BBJ48;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -560,7 +564,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.0;
+				MARKETING_VERSION = 2.0;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jdiggity.Mission;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
