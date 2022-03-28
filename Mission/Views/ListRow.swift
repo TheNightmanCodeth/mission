@@ -11,6 +11,7 @@ import KeychainAccess
 
 struct ListRow: View {
     @Binding var torrent: Torrent
+    @State var deleteDialog: Bool = false
     var store: Store
     
     var body: some View {
@@ -59,10 +60,7 @@ struct ListRow: View {
                     Text("Set priority")
                 }
                 Button("Delete", action: {
-                    let info = makeConfig(store: store)
-                    deleteTorrent(torrent: torrent, erase: false, config: info.config, auth: info.auth, onDel: { response in
-                        // TODO: Handle response
-                    })
+                    deleteDialog.toggle()
                 })
                 // Button("Download", action: {
                     // TODO: Download the destination folder using sftp library
@@ -73,5 +71,28 @@ struct ListRow: View {
             .menuStyle(BorderlessButtonMenuStyle())
             .frame(width: 10, height: 10, alignment: .center)
         }
+        // Ask to delete files on disk when removing transfer
+        .alert(
+            "Remove Transfer",
+            isPresented: $deleteDialog) {
+                Button(role: .destructive) {
+                    let info = makeConfig(store: store)
+                    deleteTorrent(torrent: torrent, erase: true, config: info.config, auth: info.auth, onDel: { response in
+                        // TODO: Handle response
+                        deleteDialog.toggle()
+                    })
+                } label: {
+                    Text("Delete files")
+                }
+                Button("Don't delete") {
+                    let info = makeConfig(store: store)
+                    deleteTorrent(torrent: torrent, erase: false, config: info.config, auth: info.auth, onDel: { response in
+                        // TODO: Handle response
+                        deleteDialog.toggle()
+                    })
+                }
+            } message: {
+                Text("Would you like to delete the transfered files from disk?")
+            }.interactiveDismissDisabled(false)
     }
 }
