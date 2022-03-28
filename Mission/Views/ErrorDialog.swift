@@ -33,10 +33,9 @@ struct ErrorDialog: View {
                 .padding(.horizontal, 20)
             ScrollView {
                 Text(store.debugMessage)
-                    .padding(.horizontal, 20)
-                    .padding(.top, 10)
                     .textSelection(.enabled)
-                    .fixedSize(horizontal: false, vertical: false)
+                    .padding(.horizontal, 20)
+                    .padding(.top, 10)                    
             }.padding(.bottom, 20)
         }
     }

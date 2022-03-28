@@ -26,6 +26,8 @@ class Store: NSObject, ObservableObject {
     @Published var isShowingServerAlert: Bool = false
     @Published var isShowingTransferFiles: Bool = false
     @Published var transferToSetFiles: Int = 0
+    @Published var editServers: Bool = false
+    @Published var successToast: Bool = false
     
     @Published var isError: Bool = false
     @Published var debugBrief: String = ""

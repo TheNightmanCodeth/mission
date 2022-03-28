@@ -90,12 +90,13 @@ struct ContentView: View {
                             store.startTimer()
                             store.isShowingLoading.toggle()
                         }) {
-                            let text = host.isDefault ? "\(host.name!) *" : host.name
+                            let text = host.name
                             Text(text!)
                         }
                     }
-                    Button(action: {store.setup.toggle()}) {
-                        Text("Add new...")
+                    Divider()
+                    Button(action: {store.editServers.toggle()}) {
+                        Text("Edit")
                     }
                 } label: {
                     Image(systemName: "network")
@@ -112,6 +113,11 @@ struct ContentView: View {
         // Add server sheet
         .sheet(isPresented: $store.setup, content: {
             AddServerDialog(store: store, viewContext: viewContext, hosts: hosts)
+        })
+        // Edit server sheet
+        .sheet(isPresented: $store.editServers, content: {
+            EditServersDialog(viewContext: viewContext, store: store)
+                .frame(width: 450, height: 350)
         })
         // Add torrent alert
         .sheet(isPresented: $store.isShowingAddAlert, content: {

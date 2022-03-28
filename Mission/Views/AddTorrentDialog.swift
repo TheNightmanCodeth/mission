@@ -36,7 +36,6 @@ struct AddTorrentDialog: View {
             
             Text("Add either a magnet link or .torrent file.")
                 .fixedSize(horizontal: true, vertical: true)
-                //.frame(maxWidth: 200, alignment: .center)
                 .font(.body)
                 .padding(.leading, 20)
                 .padding(.trailing, 20)
@@ -44,7 +43,6 @@ struct AddTorrentDialog: View {
             VStack(alignment: .leading, spacing: 0) {
                 Text("Magnet Link")
                     .font(.system(size: 10))
-                    //.frame(width: 100, alignment: .leading)
                     .padding(.top, 10)
                     .padding(.leading)
                     .padding(.bottom, 5)

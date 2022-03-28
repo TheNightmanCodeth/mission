@@ -43,9 +43,8 @@ struct AddServerDialog: View {
             TextField(
                 "Nickname",
                 text: $nameInput
-            )
-                .padding([.leading, .trailing], 20)
-                .padding([.top, .bottom], 5)
+            ).textFieldStyle(RoundedBorderTextFieldStyle())
+                
             TextField(
                 "Hostname (no http://)",
                 text: $hostInput
