@@ -113,25 +113,40 @@ struct ContentView: View {
         // Add server sheet
         .sheet(isPresented: $store.setup, content: {
             AddServerDialog(store: store, viewContext: viewContext, hosts: hosts)
+                .onExitCommand(perform: {
+                    store.setup.toggle()
+                })
         })
         // Edit server sheet
         .sheet(isPresented: $store.editServers, content: {
             EditServersDialog(viewContext: viewContext, store: store)
                 .frame(width: 450, height: 350)
+                .onExitCommand(perform: {
+                    store.editServers.toggle()
+                })
         })
         // Add torrent alert
         .sheet(isPresented: $store.isShowingAddAlert, content: {
             AddTorrentDialog(store: store)
+                .onExitCommand(perform: {
+                    store.isShowingAddAlert.toggle()
+                })
         })
         // Add transfer file picker
         .sheet(isPresented: $store.isShowingTransferFiles, content: {
             FileSelectDialog(store: store)
                 .frame(width: 400, height: 500)
+                .onExitCommand(perform: {
+                    store.isShowingTransferFiles.toggle()
+                })
         })
         // Show an error message if we encounter an error
         .sheet(isPresented: $store.isError, content: {
             ErrorDialog(store: store)
                 .frame(width: 400, height: 400)
+                .onExitCommand(perform: {
+                    store.isError.toggle()
+                })
         })
     }
     
