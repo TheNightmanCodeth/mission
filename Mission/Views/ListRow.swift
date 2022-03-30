@@ -79,8 +79,8 @@ struct ListRow: View {
                     let info = makeConfig(store: store)
                     deleteTorrent(torrent: torrent, erase: true, config: info.config, auth: info.auth, onDel: { response in
                         // TODO: Handle response
-                        deleteDialog.toggle()
                     })
+                    deleteDialog.toggle()
                 } label: {
                     Text("Delete files")
                 }
@@ -88,8 +88,8 @@ struct ListRow: View {
                     let info = makeConfig(store: store)
                     deleteTorrent(torrent: torrent, erase: false, config: info.config, auth: info.auth, onDel: { response in
                         // TODO: Handle response
-                        deleteDialog.toggle()
                     })
+                    deleteDialog.toggle()
                 }
             } message: {
                 Text("Would you like to delete the transfered files from disk?")
