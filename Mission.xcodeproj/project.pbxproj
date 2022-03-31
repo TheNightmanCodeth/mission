@@ -22,6 +22,9 @@
 		D83A42B127CDE3F700B558B6 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = D83A42B027CDE3F700B558B6 /* KeychainAccess */; };
 		D8D3D7D427E2C74400BBE755 /* FileSelectDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D3D7D327E2C74400BBE755 /* FileSelectDialog.swift */; };
 		D8D4163C27F24FDA005EDF14 /* EditServersDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D4163B27F24FDA005EDF14 /* EditServersDialog.swift */; };
+		D8D4163E27F4EEDA005EDF14 /* UpdateDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D4163D27F4EEDA005EDF14 /* UpdateDialog.swift */; };
+		D8D4164027F4F089005EDF14 /* GitHub.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D4163F27F4F089005EDF14 /* GitHub.swift */; };
+		D8D4164227F53732005EDF14 /* Updater.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D4164127F53732005EDF14 /* Updater.swift */; };
 		D8D50C6427EE7AA10074B17C /* ErrorDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D50C6327EE7AA10074B17C /* ErrorDialog.swift */; };
 		D8F05BB527D28E320067CB10 /* AlertToast in Frameworks */ = {isa = PBXBuildFile; productRef = D8F05BB427D28E320067CB10 /* AlertToast */; };
 		D8F05BB927D594D80067CB10 /* AddServerDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8F05BB827D594D80067CB10 /* AddServerDialog.swift */; };
@@ -66,6 +69,9 @@
 		D83A42AD27CBEFAB00B558B6 /* MissionStore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MissionStore.xcdatamodel; sourceTree = "<group>"; };
 		D8D3D7D327E2C74400BBE755 /* FileSelectDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSelectDialog.swift; sourceTree = "<group>"; };
 		D8D4163B27F24FDA005EDF14 /* EditServersDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditServersDialog.swift; sourceTree = "<group>"; };
+		D8D4163D27F4EEDA005EDF14 /* UpdateDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateDialog.swift; sourceTree = "<group>"; };
+		D8D4163F27F4F089005EDF14 /* GitHub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GitHub.swift; sourceTree = "<group>"; };
+		D8D4164127F53732005EDF14 /* Updater.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Updater.swift; sourceTree = "<group>"; };
 		D8D50C6327EE7AA10074B17C /* ErrorDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorDialog.swift; sourceTree = "<group>"; };
 		D8F05BB627D2AAA80067CB10 /* README.md */ = {isa = PBXFileReference; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		D8F05BB827D594D80067CB10 /* AddServerDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddServerDialog.swift; sourceTree = "<group>"; };
@@ -169,6 +175,8 @@
 			children = (
 				D8217C2327C82EDD009ABA7C /* Transmission.swift */,
 				D8F05BBC27D5A4920067CB10 /* FileAccess.swift */,
+				D8D4163F27F4F089005EDF14 /* GitHub.swift */,
+				D8D4164127F53732005EDF14 /* Updater.swift */,
 			);
 			path = Remote;
 			sourceTree = "<group>";
@@ -182,6 +190,7 @@
 				D8D3D7D327E2C74400BBE755 /* FileSelectDialog.swift */,
 				D8D50C6327EE7AA10074B17C /* ErrorDialog.swift */,
 				D8D4163B27F24FDA005EDF14 /* EditServersDialog.swift */,
+				D8D4163D27F4EEDA005EDF14 /* UpdateDialog.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -348,6 +357,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				D8D4164027F4F089005EDF14 /* GitHub.swift in Sources */,
 				D8F05BB927D594D80067CB10 /* AddServerDialog.swift in Sources */,
 				D8217C2427C82EDD009ABA7C /* Transmission.swift in Sources */,
 				D8D50C6427EE7AA10074B17C /* ErrorDialog.swift in Sources */,
@@ -358,7 +368,9 @@
 				D8217BF727C82C7D009ABA7C /* ContentView.swift in Sources */,
 				D81D47D627D1B58A0050C0B3 /* Store.swift in Sources */,
 				D8217BF527C82C7D009ABA7C /* MissionApp.swift in Sources */,
+				D8D4163E27F4EEDA005EDF14 /* UpdateDialog.swift in Sources */,
 				D83A42AB27CBEF7100B558B6 /* Persistence.swift in Sources */,
+				D8D4164227F53732005EDF14 /* Updater.swift in Sources */,
 				D8D4163C27F24FDA005EDF14 /* EditServersDialog.swift in Sources */,
 				D8F05BBD27D5A4920067CB10 /* FileAccess.swift in Sources */,
 			);
@@ -521,7 +533,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				DEVELOPMENT_ASSET_PATHS = "\"Mission/Preview Content\"";
 				DEVELOPMENT_TEAM = D44Y5BBJ48;
@@ -535,7 +547,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.5;
+				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jdiggity.Mission;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -552,7 +564,7 @@
 				CODE_SIGN_IDENTITY = "-";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
-				CURRENT_PROJECT_VERSION = 10;
+				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"Mission/Preview Content\"";
 				DEVELOPMENT_TEAM = D44Y5BBJ48;
 				ENABLE_HARDENED_RUNTIME = YES;
@@ -565,7 +577,7 @@
 					"$(inherited)",
 					"@executable_path/../Frameworks",
 				);
-				MARKETING_VERSION = 1.5;
+				MARKETING_VERSION = 1.6;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jdiggity.Mission;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;

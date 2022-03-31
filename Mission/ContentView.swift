@@ -33,6 +33,7 @@ struct ContentView: View {
             AlertToast(type: .loading)
         }
         .onAppear(perform: {
+            checkForUpdates()
             hosts.forEach { h in
                 if (h.isDefault) {
                     var config = TransmissionConfig()
@@ -147,6 +148,12 @@ struct ContentView: View {
                 .onExitCommand(perform: {
                     store.isError.toggle()
                 })
+        })
+        // Update available dialog
+        .sheet(isPresented: $store.hasUpdate, content: {
+            UpdateDialog(changelog: store.latestChangelog, store: store)
+                .frame(width: 400, height: 500)
+                
         })
     }
     

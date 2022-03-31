@@ -28,6 +28,10 @@ class Store: NSObject, ObservableObject {
     @Published var transferToSetFiles: Int = 0
     @Published var editServers: Bool = false
     @Published var successToast: Bool = false
+    @Published var hasUpdate: Bool = false
+    @Published var latestRelease: String = ""
+    @Published var latestRelTitle: String = ""
+    @Published var latestChangelog: String = ""
     
     @Published var isError: Bool = false
     @Published var debugBrief: String = ""
