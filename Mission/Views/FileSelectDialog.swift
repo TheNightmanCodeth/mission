@@ -55,9 +55,11 @@ struct FileSelectDialog: View {
                 ForEach(Array(store.addTransferFilesList.enumerated()), id: \.offset) { (i,f) in
                     MultipleSelectionRow(title: f.name, isSelected: self.selections.contains(i)) {
                         if self.selections.contains(i) {
-                            self.selections.removeAll(where: { $0 == i })
-                        } else {
+                            print("remove \(i)")
                             self.selections.append(i)
+                        } else {
+                            print("add \(i)")
+                            self.selections.removeAll(where: { $0 == i })
                         }
                     }
                 }
