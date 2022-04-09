@@ -29,6 +29,9 @@ struct ContentView: View {
             ListRow(torrent: binding(for: torrent), store: store)
         }
         .frame(minWidth: 500, idealWidth: 500, minHeight: 600, idealHeight: 600)
+        .refreshable {
+            updateList(store: store, update: {_ in})
+        }
         .toast(isPresenting: $store.isShowingLoading) {
             AlertToast(type: .loading)
         }
@@ -36,9 +39,6 @@ struct ContentView: View {
             checkForUpdates()
             hosts.forEach { h in
                 if (h.isDefault) {
-                    var config = TransmissionConfig()
-                    config.host = h.server
-                    config.port = Int(h.port)
                     store.setHost(host: h)
                 }
             }
@@ -202,6 +202,7 @@ func makeConfig(store: Store) -> (config: TransmissionConfig, auth: Transmission
     var config = TransmissionConfig()
     config.host = store.host?.server
     config.port = Int(store.host!.port)
+    config.scheme = store.host!.ssl ? "https" : "http"
     let keychain = Keychain(service: "me.jdiggity.mission")
     let password = keychain[store.host!.name!]
     let auth = TransmissionAuth(username: store.host!.username!, password: password!)

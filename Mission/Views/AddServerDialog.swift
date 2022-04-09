@@ -20,6 +20,7 @@ struct AddServerDialog: View {
     @State var userInput: String = ""
     @State var passInput: String = ""
     @State var isDefault: Bool = false
+    @State var isSSL: Bool = false
     
     var body: some View {
         VStack {
@@ -49,6 +50,9 @@ struct AddServerDialog: View {
                 "Hostname (no http://)",
                 text: $hostInput
             )
+                .padding([.leading, .trailing], 20)
+                .padding([.top, .bottom], 5)
+            Toggle("SSL", isOn: $isSSL)
                 .padding([.leading, .trailing], 20)
                 .padding([.top, .bottom], 5)
             TextField(
@@ -83,6 +87,7 @@ struct AddServerDialog: View {
                     newHost.port = Int16(portInput)!
                     newHost.username = userInput
                     newHost.isDefault = isDefault
+                    newHost.ssl = isSSL
                     
                     // Make sure nobody else is default
                     if (isDefault) {

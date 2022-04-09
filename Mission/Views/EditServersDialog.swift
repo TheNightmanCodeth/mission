@@ -84,6 +84,7 @@ struct ServerDetailsView: View {
     @State var userInput: String = ""
     @State var passInput: String = ""
     @State var isDefault: Bool = false
+    @State var isSSL: Bool = false
     
     init(host: Host, viewContext: NSManagedObjectContext, store: Store) {
         self.host = host
@@ -119,6 +120,11 @@ struct ServerDetailsView: View {
                 .padding([.leading, .trailing], 20)
                 .padding([.top, .bottom], 5)
                 .onAppear { hostInput = host.server ?? "" }
+            
+            Toggle("Use SSL (https)", isOn: $isSSL)
+                .padding([.leading, .trailing], 20)
+                .padding([.top, .bottom], 5)
+                .onAppear { isSSL = host.ssl ?? false }
         }
         
         VStack(alignment: .leading, spacing: 0) {
@@ -193,6 +199,7 @@ struct ServerDetailsView: View {
                 host.server = hostInput
                 host.port = Int16(portInput)!
                 host.username = userInput
+                host.ssl = isSSL
                 
                 try? viewContext.save()
                 

@@ -101,9 +101,7 @@ public enum TransmissionResponse {
 /// - Parameter onReceived: An escaping function that receives a list of `Torrent`s
 public func getTorrents(config: TransmissionConfig, auth: TransmissionAuth, onReceived: @escaping ([Torrent]?, String?) -> Void) -> Void {
     url = config
-    url?.scheme = "http"
     url?.path = "/transmission/rpc"
-    url?.port = config.port ?? 443
     
     let requestBody = TransmissionListRequest(
         method: "torrent-get",
@@ -162,9 +160,7 @@ struct TorrentAddResponse: Codable {
 /// - Parameter onAdd: An escaping function that receives the servers response code represented as a `TransmissionResponse`
 public func addTorrent(fileUrl: String, saveLocation: String, auth: TransmissionAuth, file: Bool, config: TransmissionConfig, onAdd: @escaping ((response: TransmissionResponse, transferId: Int)) -> Void) -> Void {
     url = config
-    url?.scheme = "http"
     url?.path = "/transmission/rpc"
-    url?.port = config.port ?? 443
     
     // Create the torrent body based on the value of `fileUrl` and `file`
     var requestBody: TransmissionRequest? = nil
@@ -241,9 +237,7 @@ public struct File: Codable {
 
 public func getTransferFiles(transferId: Int, info: (config: TransmissionConfig, auth: TransmissionAuth), onReceived: @escaping ([File])->(Void)) {
     url = info.config
-    url?.scheme = "http"
     url?.path = "/transmission/rpc"
-    url?.port = info.config.port ?? 443
     
     let request = TorrentFilesRequest(
         method: "torrent-get",
@@ -295,9 +289,7 @@ public func getTransferFiles(transferId: Int, info: (config: TransmissionConfig,
 /// - Parameter onDel: An escaping function that receives the server's response code as a `TransmissionResponse`
 public func deleteTorrent(torrent: Torrent, erase: Bool, config: TransmissionConfig, auth: TransmissionAuth, onDel: @escaping (TransmissionResponse) -> Void) -> Void {
     url = config
-    url?.scheme = "http"
     url?.path = "/transmission/rpc"
-    url?.port = config.port ?? 443
     
     let requestBody = TransmissionRemoveRequest(
         method: "torrent-remove",
@@ -364,9 +356,7 @@ struct TransmissionSessionResponse: Codable {
 /// - Parameter onResponse: An escaping function that receives the response from the server
 public func getDefaultDownloadDir(config: TransmissionConfig, auth: TransmissionAuth, onResponse: @escaping (String) -> Void) {
     url = config
-    url?.scheme = "http"
     url?.path = "/transmission/rpc"
-    url?.port = config.port ?? 443
     
     let requestBody = TransmissionRequest(
         method: "session-get",
@@ -411,9 +401,7 @@ struct TorrentActionRequest: Codable {
 
 public func playPause(torrent: Torrent, config: TransmissionConfig, auth: TransmissionAuth, onResponse: @escaping (TransmissionResponse) -> Void) {
     url = config
-    url?.scheme = "http"
     url?.path = "/transmission/rpc"
-    url?.port = config.port ?? 443
     
     // If the torrent already has `stopped` status, start it. Otherwise, stop it.
     let requestBody = torrent.status == TorrentStatus.stopped.rawValue ? TorrentActionRequest(
@@ -456,9 +444,7 @@ public func playPause(torrent: Torrent, config: TransmissionConfig, auth: Transm
 /// - Parameter onResponse: Called when the request is complete
 public func playPauseAll(start: Bool, info: (config: TransmissionConfig, auth: TransmissionAuth), onResponse: @escaping (TransmissionResponse) -> Void) {
     url = info.config
-    url?.scheme = "http"
     url?.path = "/transmission/rpc"
-    url?.port = info.config.port ?? 443
     
     // If the torrent already has `stopped` status, start it. Otherwise, stop it.
     let requestBody = start ? TransmissionRequest(
@@ -501,9 +487,7 @@ public func playPauseAll(start: Bool, info: (config: TransmissionConfig, auth: T
 /// - Parameter onComplete: Called when the servers' response is received with a `TransmissionResponse`
 public func setPriority(torrent: Torrent, priority: TorrentPriority, info: (config: TransmissionConfig, auth: TransmissionAuth), onComplete: @escaping (TransmissionResponse) -> Void) {
     url = info.config
-    url?.scheme = "http"
     url?.path = "/transmission/rpc"
-    url?.port = info.config.port ?? 443
     
     let requestBody = TorrentActionRequest(
         method: "torrent-set",
@@ -541,9 +525,7 @@ public func setPriority(torrent: Torrent, priority: TorrentPriority, info: (conf
 /// Tells transmission to olny download the selected files
 public func setTransferFiles(transferId: Int, files: [Int], info: (config: TransmissionConfig, auth: TransmissionAuth), onComplete: @escaping (TransmissionResponse) -> Void) {
     url = info.config
-    url?.scheme = "http"
     url?.path = "/transmission/rpc"
-    url?.port = info.config.port ?? 443
     
     let requestBody = TorrentActionRequest(
         method: "torrent-set",
