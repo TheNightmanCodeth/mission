@@ -37,16 +37,13 @@ struct Release: Codable {
 }
 
 func getLatestRelease(onComplete: @escaping (Release?, Error?) -> Void) {
-    
     // Create the request with auth values
     var req = URLRequest(url: URL(string: "https://api.github.com/repos/TheNightmanCodeth/Mission/releases/latest")!)
     req.httpMethod = "GET"
-    
     let task = URLSession.shared.dataTask(with: req) { (data, resp, err) in
         if err != nil {
             onComplete(nil, err!)
         }
-        
         let httpResp = resp as? HTTPURLResponse
         let code = httpResp?.statusCode
         // Call `onAdd` with the status code
@@ -57,7 +54,6 @@ func getLatestRelease(onComplete: @escaping (Release?, Error?) -> Void) {
             return onComplete(nil, GithubError.forbidden)
         case 200?:
             let response = try? JSONDecoder().decode(Release.self, from: data!)
-            print(String(decoding: data!, as: UTF8.self))
             return onComplete(response, nil)
         default:
             return onComplete(nil, GithubError.failed)

@@ -124,7 +124,7 @@ struct ServerDetailsView: View {
             Toggle("Use SSL (https)", isOn: $isSSL)
                 .padding([.leading, .trailing], 20)
                 .padding([.top, .bottom], 5)
-                .onAppear { isSSL = host.ssl ?? false }
+                .onAppear { isSSL = host.ssl }
         }
         
         VStack(alignment: .leading, spacing: 0) {

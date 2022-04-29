@@ -7,7 +7,7 @@
 
 import Foundation
 
-let TOKEN_HEAD = "X-Transmission-Session-Id"
+var TOKEN_HEAD = "x-transmission-session-id"
 public typealias TransmissionConfig = URLComponents
 var lastSessionToken: String?
 var url: TransmissionConfig?
@@ -112,7 +112,6 @@ public func getTorrents(config: TransmissionConfig, auth: TransmissionAuth, onRe
     
     // Create the request with auth values
     let req = makeRequest(requestBody: requestBody, auth: auth)
-    
     // Send the request
     let task = URLSession.shared.dataTask(with: req) { (data, resp, error) in
         if error != nil {
@@ -121,7 +120,7 @@ public func getTorrents(config: TransmissionConfig, auth: TransmissionAuth, onRe
         let httpResp = resp as? HTTPURLResponse
         switch httpResp?.statusCode {
         case 409?: // If we get a 409, save the session token and try again
-            authorize(httpResp: httpResp)
+            authorize(httpResp: httpResp, ssl: (config.scheme == "https"))
             getTorrents(config: config, auth: auth, onReceived: onReceived)
             return
         case 200?:            
@@ -190,7 +189,7 @@ public func addTorrent(fileUrl: String, saveLocation: String, auth: Transmission
         // Call `onAdd` with the status code
         switch httpResp?.statusCode {
         case 409?: // If we get a 409, save the token and try again
-            authorize(httpResp: httpResp)
+            authorize(httpResp: httpResp, ssl: (config.scheme == "https"))
             addTorrent(fileUrl: fileUrl, saveLocation: saveLocation, auth: auth, file: file, config: config, onAdd: onAdd)
             return
         case 401?:
@@ -257,7 +256,7 @@ public func getTransferFiles(transferId: Int, info: (config: TransmissionConfig,
         let httpResp = resp as? HTTPURLResponse
         switch httpResp?.statusCode {
         case 409?: // If we get a 409, save the session token and try again
-            authorize(httpResp: httpResp)
+            authorize(httpResp: httpResp, ssl: (info.config.scheme == "https"))
             getTransferFiles(transferId: transferId, info: info, onReceived: onReceived)
             return
         case 200?:
@@ -312,7 +311,7 @@ public func deleteTorrent(torrent: Torrent, erase: Bool, config: TransmissionCon
         // Call `onAdd` with the status code
         switch httpResp?.statusCode {
         case 409?: // If we get a 409, save the token and try again
-            authorize(httpResp: httpResp)
+            authorize(httpResp: httpResp, ssl: (config.scheme == "https"))
             deleteTorrent(torrent: torrent, erase: erase, config: config, auth: auth, onDel: onDel)
             return
         case 401?:
@@ -374,7 +373,7 @@ public func getDefaultDownloadDir(config: TransmissionConfig, auth: Transmission
         // Call `onAdd` with the status code
         switch httpResp?.statusCode {
         case 409?: // If we get a 409, save the token and try again
-            authorize(httpResp: httpResp)
+            authorize(httpResp: httpResp, ssl: (config.scheme == "https"))
             getDefaultDownloadDir(config: config, auth: auth, onResponse: onResponse)
             return
         case 401?:
@@ -423,7 +422,7 @@ public func playPause(torrent: Torrent, config: TransmissionConfig, auth: Transm
         // Call `onAdd` with the status code
         switch httpResp?.statusCode {
         case 409?: // If we get a 409, save the token and try again
-            authorize(httpResp: httpResp)
+            authorize(httpResp: httpResp, ssl: (config.scheme == "https"))
             playPause(torrent: torrent, config: config, auth: auth, onResponse: onResponse)
             return
         case 401?:
@@ -466,7 +465,7 @@ public func playPauseAll(start: Bool, info: (config: TransmissionConfig, auth: T
         // Call `onAdd` with the status code
         switch httpResp?.statusCode {
         case 409?: // If we get a 409, save the token and try again
-            authorize(httpResp: httpResp)
+            authorize(httpResp: httpResp, ssl: (info.config.scheme == "https"))
             playPauseAll(start: start, info: info, onResponse: onResponse)
             return
         case 401?:
@@ -508,7 +507,7 @@ public func setPriority(torrent: Torrent, priority: TorrentPriority, info: (conf
         // Call `onAdd` with the status code
         switch httpResp?.statusCode {
         case 409?: // If we get a 409, save the token and try again
-            authorize(httpResp: httpResp)
+            authorize(httpResp: httpResp, ssl: (info.config.scheme == "https"))
             setPriority(torrent: torrent, priority: priority, info: info, onComplete: onComplete)
             return
         case 401?:
@@ -546,7 +545,7 @@ public func setTransferFiles(transferId: Int, files: [Int], info: (config: Trans
         // Call `onAdd` with the status code
         switch httpResp?.statusCode {
         case 409?: // If we get a 409, save the token and try again
-            authorize(httpResp: httpResp)
+            authorize(httpResp: httpResp, ssl: (info.config.scheme == "https"))
             setTransferFiles(transferId: transferId, files: files, info: info, onComplete: onComplete)
             return
         case 401?:
@@ -561,7 +560,8 @@ public func setTransferFiles(transferId: Int, files: [Int], info: (config: Trans
 }
 
 /// Gets the session-token from the response and sets it as the `lastSessionToken`
-public func authorize(httpResp: HTTPURLResponse?) {
+public func authorize(httpResp: HTTPURLResponse?, ssl: Bool) {
+    TOKEN_HEAD = ssl ? TOKEN_HEAD : "X-Transmission-Session-Id" // Aparently it's different with SSL 🤦‍♂️
     let mixedHeaders = httpResp?.allHeaderFields as! [String: Any]
     lastSessionToken = mixedHeaders[TOKEN_HEAD] as? String
 }
