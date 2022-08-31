@@ -1,0 +1,34 @@
+name: Build ipa
+
+on:
+  push:
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploying to AppStore
+    runs-on: macOS-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v3
+      - name: Install GPG
+        run: brew install gnupg
+      - name: Setup provisioning profile
+        env:
+          IOS_KEYS: ${{ secrets.IOS_KEYS }}
+        run: ./.github/secrets/decrypt_secrets.sh
+      - name: Archiving Mission
+        run: ./.github/scripts/archive_app.sh
+      - name: Exporting .app
+        run: ./.github/scripts/export.sh
+      - name: Publishing app
+        if: success()
+        env:
+          APPLEID: ${{ secrets.APPLEID }}
+          APPLEID_PASSWORD: ${{ secrets.APPLEID_PASSWORD }}
+        run: ./.github/scripts/publish.sh
+
