@@ -20,6 +20,7 @@
 		D83A42AB27CBEF7100B558B6 /* Persistence.swift in Sources */ = {isa = PBXBuildFile; fileRef = D83A42AA27CBEF7100B558B6 /* Persistence.swift */; };
 		D83A42AE27CBEFAB00B558B6 /* MissionStore.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = D83A42AC27CBEFAB00B558B6 /* MissionStore.xcdatamodeld */; };
 		D83A42B127CDE3F700B558B6 /* KeychainAccess in Frameworks */ = {isa = PBXBuildFile; productRef = D83A42B027CDE3F700B558B6 /* KeychainAccess */; };
+		D8C921CE28BF1FF6004D14EA /* exportOptions.plist in Resources */ = {isa = PBXBuildFile; fileRef = D8C921CD28BF1FF6004D14EA /* exportOptions.plist */; };
 		D8D3D7D427E2C74400BBE755 /* FileSelectDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D3D7D327E2C74400BBE755 /* FileSelectDialog.swift */; };
 		D8D4163C27F24FDA005EDF14 /* EditServersDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D4163B27F24FDA005EDF14 /* EditServersDialog.swift */; };
 		D8D4163E27F4EEDA005EDF14 /* UpdateDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = D8D4163D27F4EEDA005EDF14 /* UpdateDialog.swift */; };
@@ -67,6 +68,7 @@
 		D83A426427C99F6000B558B6 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		D83A42AA27CBEF7100B558B6 /* Persistence.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Persistence.swift; sourceTree = "<group>"; };
 		D83A42AD27CBEFAB00B558B6 /* MissionStore.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = MissionStore.xcdatamodel; sourceTree = "<group>"; };
+		D8C921CD28BF1FF6004D14EA /* exportOptions.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = exportOptions.plist; sourceTree = "<group>"; };
 		D8D3D7D327E2C74400BBE755 /* FileSelectDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FileSelectDialog.swift; sourceTree = "<group>"; };
 		D8D4163B27F24FDA005EDF14 /* EditServersDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EditServersDialog.swift; sourceTree = "<group>"; };
 		D8D4163D27F4EEDA005EDF14 /* UpdateDialog.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UpdateDialog.swift; sourceTree = "<group>"; };
@@ -141,6 +143,7 @@
 				D8217BFA27C82C7E009ABA7C /* Preview Content */,
 				D83A42AA27CBEF7100B558B6 /* Persistence.swift */,
 				D81D47D527D1B58A0050C0B3 /* Store.swift */,
+				D8C921CD28BF1FF6004D14EA /* exportOptions.plist */,
 			);
 			path = Mission;
 			sourceTree = "<group>";
@@ -309,6 +312,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				D8217BFC27C82C7E009ABA7C /* Preview Assets.xcassets in Resources */,
+				D8C921CE28BF1FF6004D14EA /* exportOptions.plist in Resources */,
 				D8217BF927C82C7E009ABA7C /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -442,6 +446,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application: Joe Diragi (D44Y5BBJ48)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -503,6 +508,7 @@
 				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "3rd Party Mac Developer Application: Joe Diragi (D44Y5BBJ48)";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
@@ -561,7 +567,8 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_ENTITLEMENTS = Mission/Mission.entitlements;
-				CODE_SIGN_IDENTITY = "-";
+				CODE_SIGN_IDENTITY = "Apple Development";
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "Apple Development";
 				CODE_SIGN_STYLE = Automatic;
 				COMBINE_HIDPI_IMAGES = YES;
 				CURRENT_PROJECT_VERSION = 1;
@@ -580,6 +587,7 @@
 				MARKETING_VERSION = 1.51;
 				PRODUCT_BUNDLE_IDENTIFIER = com.jdiggity.Mission;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE_SPECIFIER = "";
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
 			};
