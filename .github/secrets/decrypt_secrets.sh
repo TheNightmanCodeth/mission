@@ -9,7 +9,7 @@ mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
 cp ./.github/secrets/MissionProfile.provisionprofile.provisionprofile ~/Library/MobileDevice/Provisioning\ Profiles/MissionProfile.provisionprofile.provisionprofile
 
 security create-keychain -p "" build.keychain
-security import ./.github/secrets/MacOSMissionCertificates.p12 -t agg -k ~/Library/Keychains/build.keychain -P "" -A
+security import ./.github/secrets/MacOSMissionCertificates.p12.p12 -t agg -k ~/Library/Keychains/build.keychain -P "" -A
 
 security list-keychains -s ~/Library/Keychains/build.keychain
 security default-keychain -s ~/Library/Keychains/build.keychain
