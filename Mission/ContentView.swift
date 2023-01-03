@@ -63,7 +63,7 @@ struct ContentView: View {
         })
         .navigationTitle("Mission")
         .toolbar {
-            ToolbarItem(placement: .status) {
+            ToolbarItem(placement: .automatic) {
                 Menu {
                     Button(action: {
                         playPauseAll(start: false, info: makeConfig(store: store), onResponse: { response in
@@ -83,7 +83,7 @@ struct ContentView: View {
                     Image(systemName: "playpause")
                 }
             }
-            ToolbarItem(placement: .status) {
+            ToolbarItem(placement: .automatic) {
                 Menu {
                     ForEach(hosts, id: \.self) { host in
                         Button(action: {
@@ -103,7 +103,7 @@ struct ContentView: View {
                     Image(systemName: "network")
                 }
             }
-            ToolbarItem(placement: .primaryAction) {
+            ToolbarItem(placement: .automatic) {
                 Button(action: {
                     store.isShowingAddAlert.toggle()
                 }) {
