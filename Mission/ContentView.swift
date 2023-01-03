@@ -180,9 +180,11 @@ func updateList(store: Store, update: @escaping ([Torrent]) -> Void, retry: Int 
         } else if (torrents == nil) {
             if (retry > 3) {
                 print("Showing error...")
-                store.isError.toggle()
-                store.debugBrief = "Couldn't reach server."
-                store.debugMessage = "We asked the server a few times for a response, \nbut it never got back to us 😔"
+                DispatchQueue.main.async {
+                    store.isError.toggle()
+                    store.debugBrief = "Couldn't reach server."
+                    store.debugMessage = "We asked the server a few times for a response, \nbut it never got back to us 😔"
+                }
             }
             updateList(store: store, update: update, retry: retry + 1)
         } else {

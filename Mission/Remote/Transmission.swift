@@ -78,7 +78,7 @@ public struct Torrent: Codable, Hashable {
     let totalSize: Int
     let percentDone: Double
     let status: Int
-    let sendingToUs: Int
+    let peersSendingToUs: Int
     let peersConnected: Int
 }
 
@@ -106,7 +106,7 @@ public func getTorrents(config: TransmissionConfig, auth: TransmissionAuth, onRe
     let requestBody = TransmissionListRequest(
         method: "torrent-get",
         arguments: [
-            "fields": [ "id", "name", "totalSize", "percentDone", "status", "sendingToUs", "peersConnected" ]
+            "fields": [ "id", "name", "totalSize", "percentDone", "status", "peersSendingToUs", "peersConnected", "peers" ]
         ]
     )
     

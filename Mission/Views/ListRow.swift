@@ -24,9 +24,9 @@ struct ListRow: View {
                 ProgressView(value: torrent.percentDone)
                     .progressViewStyle(LinearProgressViewStyle(tint: torrent.status == TorrentStatus.seeding.rawValue ? Color.green : Color.blue))
                 let status = torrent.status == TorrentStatus.seeding.rawValue ?
-                    "Seeding to \(torrent.peersConnected - torrent.sendingToUs) of \(torrent.peersConnected) peers" :
+                    "Seeding to \(torrent.peersConnected - torrent.peersSendingToUs) of \(torrent.peersConnected) peers" :
                 torrent.status == TorrentStatus.stopped.rawValue ? "Stopped" :
-                    "Downloading from \(torrent.sendingToUs) of \(torrent.peersConnected) peers"
+                    "Downloading from \(torrent.peersSendingToUs) of \(torrent.peersConnected) peers"
                 
                 Text(status)
                     .font(.custom("sub", size: 10))
